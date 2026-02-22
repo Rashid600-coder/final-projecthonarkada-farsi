@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل مدیریت - هنرکده فارسی</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <style>
+    body {
+      direction: rtl;
+      font-family: Tahoma, sans-serif;
+    }
+    .nastaliq-brand {
+      font-size: 22px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand nastaliq-brand" href="index.html">هنرکده فارسی</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+
+  <section class="container my-5">
+    <h1>پنل مدیریت</h1>
+    <!-- فرم متصل به Flask -->
+    <form method="POST" action="/">
+      <div class="mb-3">
+        <label class="form-label">عنوان محتوا</label>
+        <input type="text" class="form-control" name="title" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">متن محتوا</label>
+        <textarea class="form-control" rows="6" name="content" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">دسته‌بندی</label>
+        <select class="form-select" name="category" required>
+          <option value="شعر">شعر</option>
+          <option value="داستان کوتاه">داستان کوتاه</option>
+          <option value="متن ادبی">متن ادبی</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success">ثبت محتوا</button>
+    </form>
+  </section>
+
+  <footer class="bg-dark text-white py-4 text-center">
+    <p>© 2025 هنرکده فارسی | تمام حقوق محفوظ است</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

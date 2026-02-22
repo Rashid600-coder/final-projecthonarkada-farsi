@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نتایج جستجو - هنرکده فارسی</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+
+    body {
+      font-family: "Vazir", sans-serif;
+      background: #d3d2d0;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #ebebe1;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #000;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    h4 {
+      color: #000;
+      border-right: 4px solid #007bff;
+      padding-right: 10px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+
+    .result-item {
+      background: #fafafa;
+      border: none;
+      border-radius: 15px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .result-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      background: #fdfdfd;
+    }
+    .result-item span {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .btn-outline-primary {
+      border-radius: 30px;
+      padding: 4px 14px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #000;
+      text-decoration: none;
+      position: absolute;
+      top: 36px;
+      left: 35px;
+      transition: color 0.3s ease;
+      z-index: 2000; 
+    }
+
+
+    .btn-back::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 50%;
+      bottom: 0;
+      background-color: #ffcc00;
+      transition: width 0.3s ease;
+      border-radius: 2px;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .btn-back:hover {
+      color: #ffcc00;
+    }
+
+    .btn-back:hover::after {
+      width: 100%;
+    }
+    .btn-view {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #000;
+      text-decoration: none;
+      background: none;
+      border: none;
+      position: relative;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-view::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 50%;
+      bottom: 8px;
+      background-color: #ffcc00;
+      transition: width 0.3s ease;
+      border-radius: 2px;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .btn-view:hover {
+      color: #ffcc00;
+    }
+
+    .btn-view:hover::after {
+      width: 100%;
+    }
+
+
+    .text-muted {
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-5 position-relative">
+
+    <a href="javascript:history.back()" class="btn-back">
+      <i class="bi bi-arrow-left-circle"></i>
+    </a>
+
+    <h2 class="text-center">نتایج جستجو برای <span style="color:#606260;">"{{ query }}"</span></h2>
+
+    <h4>شعر</h4>
+    {% if poems %}
+      {% for item in poems %}
+        <div class="d-flex justify-content-between align-items-center result-item">
+          <div>
+            <span>{{ item['عنوان'] }}</span>
+            {% set fname = item.get('first_name', '') %}
+            {% set lname = item.get('last_name', '') %}
+            {% if fname or lname %}
+              <small class="text-muted d-block">سراینده: {{ fname }} {{ lname }}</small>
+            {% else %}
+              <small class="text-muted d-block">سراینده: ناشناس</small>
+            {% endif %}
+          </div>
+          <a href="{{ url_for('view_item', cat='poems', item_id=item['شماره']) }}" class="btn btn-sm btn-view">
+            <i class="bi bi-eye"></i>
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">هیچ شعری یافت نشد.</p>
+    {% endif %}
+
+
+
+    <h4>داستان کوتاه</h4>
+    {% if stories %}
+      {% for item in stories %}
+        <div class="d-flex justify-content-between align-items-center result-item">
+          <div>
+            <span>{{ item['عنوان'] }}</span>
+            {% if item['first_name'] and item['last_name'] %}
+              <small class="text-muted d-block">نویسنده: {{ item['first_name'] }} {{ item['last_name'] }}</small>
+            {% else %}
+              <small class="text-muted d-block">نویسنده: ناشناس</small>
+            {% endif %}
+          </div>
+          <a href="{{ url_for('view_item', cat='stories', item_id=item['شماره']) }}" class="btn btn-sm btn-view">
+            <i class="bi bi-eye"></i>
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">هیچ داستانی یافت نشد.</p>
+    {% endif %}
+
+
+    <h4>متن ادبی</h4>
+    {% if literature %}
+      {% for item in literature %}
+        <div class="d-flex justify-content-between align-items-center result-item">
+          <div>
+            <span>{{ item['عنوان'] }}</span>
+            {% if item['first_name'] and item['last_name'] %}
+              <small class="text-muted d-block">نویسنده: {{ item['first_name'] }} {{ item['last_name'] }}</small>
+            {% else %}
+              <small class="text-muted d-block">نویسنده: ناشناس</small>
+            {% endif %}
+          </div>
+          <a href="{{ url_for('view_item', cat='literature', item_id=item['شماره']) }}" class="btn btn-sm btn-view">
+            <i class="bi bi-eye"></i>
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">هیچ متن ادبی یافت نشد.</p>
+    {% endif %}
+
+  </div>
+</body>
+</html>

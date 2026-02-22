@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دسته‌بندی‌ها - هنرکده فارسی</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+  <style>
+    :root {
+      --primary-dark: #2c2d2d;
+      --accent-yellow: #ffcc00;
+      --light-bg: #d3d2d0;
+      --card-bg: #f8f9fa;
+      --text-dark: #1a1a1a;
+      --gradient-gold: linear-gradient(135deg, #ffcc00, #ff9900);
+      --gradient-dark: linear-gradient(135deg, #2c2d2d, #1a1a1a);
+    }
+
+    body {
+      background: linear-gradient(135deg, #e8e8e8 0%, #f5f5f5 50%, #ffffff 100%);
+      min-height: 100vh;
+      font-family: 'Vazir', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .custom-nav-graphic {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .custom-nav-graphic .nav-link {
+      position: relative;
+      color: #f0f0f0;
+      font-weight: 500;
+      padding: 8px 15px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .custom-nav-graphic .nav-link::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 50%;
+      bottom: 4px;
+      background-color: #ffcc00;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .custom-nav-graphic .nav-link:hover {
+      color: #ffcc00;
+    }
+
+    .custom-nav-graphic .nav-link:hover::after {
+      left: 0;
+      width: 100%;
+    }
+
+    .custom-nav-graphic .nav-link.active {
+      color: #ffcc00;
+      font-weight: 600;
+    }
+
+    @media (max-width: 991px) {
+      .custom-nav-graphic {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+      }
+    }
+
+    .search-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .search-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: #fff;
+      margin-left: 40px;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .search-btn::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 50%;
+      bottom: 0px;
+      background-color: #ffcc00;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+
+    .search-btn:hover {
+      color: #ffcc00;
+    }
+
+    .search-btn:hover::after {
+      width: 100%;
+    }
+
+    .search-form {
+      position: absolute;
+      left: 40px;
+      top: 40%;
+      transform: translateY(-50%) scaleX(0);
+      transform-origin: left;
+      width: 250px;
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s ease;
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: none;
+      outline: none;
+      background: #f5f5f5;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+      font-size: 14px;
+      transition: box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .search-input:focus {
+      box-shadow: 0 0 20px rgba(255,204,0,0.6);
+      background: #fff;
+    }
+
+    .search-wrapper.active .search-form {
+      transform: translateY(-50%) scaleX(1);
+      opacity: 1;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #fff;
+      text-decoration: none;
+      position: absolute;
+      top: 36px;
+      left: 15px;
+      transition: color 0.3s ease;
+      z-index: 2000;
+    }
+
+
+    .btn-back::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 50%;
+      bottom: 0;
+      background-color: #ffcc00;
+      transition: width 0.3s ease;
+      border-radius: 2px;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .btn-back:hover {
+      color: #ffcc00;
+    }
+
+    .btn-back:hover::after {
+      width: 100%;
+    }
+
+    .main-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    .main-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 50%;
+      transform: translateX(50%);
+      width: 150px;
+      height: 4px;
+      background: var(--gradient-gold);
+      border-radius: 4px;
+      animation: titleUnderline 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes titleUnderline {
+      0% { width: 150px; }
+      100% { width: 200px; }
+    }
+
+    .category-header {
+      background: var(--gradient-dark);
+      color: white;
+      padding: 20px 30px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 204, 0, 0.2);
+    }
+
+    .category-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,204,0,0.1) 0%, transparent 70%);
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .category-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .category-title i {
+      color: var(--accent-yellow);
+      font-size: 1.8rem;
+    }
+
+    .content-card {
+      background: linear-gradient(145deg, #ffffff, #f8f9fa);
+      border: none;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      border-top: 4px solid transparent;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .content-card.poem {
+      border-top-color: #ff9900;
+      background: linear-gradient(145deg, #fffaf0, #fff5e6);
+    }
+
+    .content-card.story {
+      border-top-color: #2c2d2d;
+      background: linear-gradient(145deg, #f8f9ff, #f0f2ff);
+    }
+
+    .content-card.literature {
+      border-top-color: #4a4a4a;
+      background: linear-gradient(145deg, #f9fff9, #f0fff0);
+    }
+
+    .content-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .content-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .content-card:hover::before {
+      transform: translateX(100%);
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .artwork-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .author-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gradient-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+    }
+
+    .author-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .author-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .author-role {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .btn-view {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: var(--gradient-gold);
+      color: #000;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+      z-index: 2;
+    }
+
+    .btn-view:hover {
+      transform: scale(1.15) rotate(5deg);
+      box-shadow: 0 8px 20px rgba(255, 204, 0, 0.4);
+    }
+
+    .empty-card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(248,249,250,0.6));
+      border: 2px dashed rgba(0,0,0,0.1);
+      border-radius: 20px;
+      padding: 40px 20px;
+      margin-bottom: 25px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .empty-card:hover {
+      background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,249,250,0.8));
+      border-color: rgba(255,153,0,0.3);
+      transform: translateY(-5px);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      color: rgba(0,0,0,0.2);
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .empty-card:hover .empty-icon {
+      color: rgba(255,153,0,0.4);
+      transform: scale(1.1);
+    }
+
+    .empty-text {
+      color: rgba(0,0,0,0.4);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .category-filters {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text-dark);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+
+    .filter-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .filter-btn.active {
+      background: var(--gradient-gold);
+      color: #000;
+      box-shadow: 0 5px 20px rgba(255, 204, 0, 0.3);
+    }
+
+    .sorting-filters {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .sort-btn {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 50px;
+      background: rgba(44, 45, 45, 0.1);
+      color: var(--text-dark);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .sort-btn:hover {
+      background: rgba(44, 45, 45, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .sort-btn.active {
+      background: var(--gradient-dark);
+      color: white;
+      box-shadow: 0 5px 15px rgba(44, 45, 45, 0.3);
+    }
+
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .artwork-counter {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: var(--gradient-dark);
+      color: white;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 2;
+    }
+
+    .category-count {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: var(--accent-yellow);
+      color: var(--text-dark);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+      z-index: 2;
+    }
+
+    footer {
+      background: var(--gradient-dark);
+      color: white;
+      padding: 30px 0;
+      margin-top: 60px;
+      position: relative;
+      border-top: 3px solid var(--accent-yellow);
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent-yellow), transparent);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(30px, -30px) rotate(120deg); }
+      66% { transform: translate(-20px, 20px) rotate(240deg); }
+    }
+
+    .floating-words {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .floating-word {
+      position: absolute;
+      font-size: 2.5rem;
+      color: rgba(0, 0, 0, 0.03);
+      font-weight: 900;
+      font-family: 'IranNastaliq', serif;
+      animation: floatWord 25s linear infinite;
+    }
+
+    @keyframes floatWord {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.1;
+      }
+      90% {
+        opacity: 0.1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-title {
+        font-size: 2rem;
+      }
+
+      .category-filters,
+      .sorting-filters {
+        gap: 10px;
+      }
+
+      .filter-btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+      }
+
+      .sort-btn {
+        padding: 8px 18px;
+        font-size: 0.8rem;
+      }
+
+      .content-card {
+        height: auto;
+        min-height: 180px;
+      }
+
+      .btn-back {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+        left: 10px;
+      }
+
+      .category-count {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="floating-words">
+    <div class="floating-word" style="top:10%; right:5%; animation-delay: 0s;">شعر</div>
+    <div class="floating-word" style="top:20%; right:25%; animation-delay: 5s;">داستان</div>
+    <div class="floating-word" style="top:40%; right:60%; animation-delay: 10s;">ادبیات</div>
+    <div class="floating-word" style="top:60%; right:80%; animation-delay: 15s;">هنر</div>
+    <div class="floating-word" style="top:80%; right:40%; animation-delay: 20s;">فارسی</div>
+  </div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c2d2d;">
+    <div class="container position-relative">
+      <a href="{{url_for('index')}}" class="btn-back">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+
+      <leble class="navbar-brand nastaliq-brand">هنرکده فارسی</leble>
+      <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarNav">
+        <ul class="navbar-nav custom-nav-graphic" style="display:inline-flex; transform: translateX(50px);">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">خانه</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('Authors') }}">نویسندگان و شاعران</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin') }}">نگارش محتوا</a></li>
+          <li class="nav-item"><a class="nav-link active" href="{{ url_for('categories') }}">آرشیو</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('my_artworks') }}">آثار من</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">درباره ما</a></li>
+        </ul>
+      </div>
+
+      <div class="search-wrapper">
+        <button id="search-btn" class="search-btn">
+          <i class="bi bi-search"></i>
+        </button>
+        <form class="search-form" action="{{ url_for('search') }}" method="GET">
+          <input id="search-input" type="text" name="q" placeholder="جستجو در آثار..." class="search-input">
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <section class="container my-5">
+    <h1 class="main-title animate__animated animate__fadeInDown" >آرشیو آثار هنرکده فارسی</h1>
+
+    <div class="category-filters animate__animated animate__fadeIn">
+      <button class="filter-btn active" onclick="filterByType('all')">
+        <i class="bi bi-grid-3x3-gap"></i>همه آثار
+      </button>
+      <button class="filter-btn" onclick="filterByType('poem')">
+        <i class="bi bi-journal-text"></i>شعر
+      </button>
+      <button class="filter-btn" onclick="filterByType('story')">
+        <i class="bi bi-book"></i>داستان
+      </button>
+      <button class="filter-btn" onclick="filterByType('literature')">
+        <i class="bi bi-pen"></i>متن ادبی
+      </button>
+    </div>
+
+    <div class="sorting-filters animate__animated animate__fadeIn" style="animation-delay: 0.2s;">
+      <button class="sort-btn" onclick="sortBy('newest')">
+        <i class="bi bi-sort-down-alt"></i>جدیدترین
+      </button>
+      <button class="sort-btn" onclick="sortBy('oldest')">
+        <i class="bi bi-sort-up-alt"></i>قدیمی‌ترین
+      </button>
+      <button class="sort-btn" onclick="sortBy('title-asc')">
+        <i class="bi bi-sort-alpha-down"></i>عنوان (الف-ی)
+      </button>
+      <button class="sort-btn" onclick="sortBy('title-desc')">
+        <i class="bi bi-sort-alpha-up-alt"></i>عنوان (ی-الف)
+      </button>
+    </div>
+
+    <div class="row" id="categories-container">
+      <div class="col-md-4 mb-4 fade-in-up" style="animation-delay: 0.1s;">
+        <div class="category-header">
+          <div class="category-count" id="poem-count">{{ poems|length }}</div>
+          <h3 class="category-title">
+            <i class="bi bi-journal-text"></i>شعر ها
+          </h3>
+          <small class="text-light opacity-75">مجموعه‌ای از زیباترین اشعار فارسی</small>
+        </div>
+
+        {% for item in poems %}
+          <div class="content-card poem" data-category="poem" data-title="{{ item['عنوان'] }}" data-date="{{ item.created_at if item.created_at else '' }}">
+            <div class="artwork-counter">{{ loop.index }}</div>
+            <div class="card-content">
+              <h4 class="artwork-title">{{ item['عنوان'] }}</h4>
+              <div class="author-info">
+                <div class="author-avatar">
+                  {{ item['first_name'][0] if item['first_name'] else 'ن' }}
+                </div>
+                <div class="author-details">
+                  <span class="author-name">
+                    {{ item['first_name'] }} {{ item['last_name'] }}
+                  </span>
+                  <span class="author-role">شاعر</span>
+                </div>
+              </div>
+              <div class="text-muted mt-auto">
+                <small>
+                  <i class="bi bi-calendar me-1"></i>
+                  {% if item.created_at %}
+                    {{ item.created_at[:10] }}
+                  {% else %}
+                    تاریخ نامشخص
+                  {% endif %}
+                </small>
+              </div>
+            </div>
+            <a href="{{ url_for('view_item', cat='poems', item_id=item['شماره']) }}"
+               class="btn btn-view" title="مشاهده شعر">
+              <i class="bi bi-eye"></i>
+            </a>
+          </div>
+        {% else %}
+          <div class="empty-card">
+            <i class="bi bi-journal-x empty-icon"></i>
+            <p class="empty-text">شعری برای نمایش موجود نیست</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-4 mb-4 fade-in-up" style="animation-delay: 0.2s;">
+        <div class="category-header">
+          <div class="category-count" id="story-count">{{ stories|length }}</div>
+          <h3 class="category-title">
+            <i class="bi bi-book"></i>داستان ها
+          </h3>
+          <small class="text-light opacity-75">داستان‌های خواندنی و جذاب</small>
+        </div>
+
+        {% for item in stories %}
+          <div class="content-card story" data-category="story" data-title="{{ item['عنوان'] }}" data-date="{{ item.created_at if item.created_at else '' }}">
+            <div class="artwork-counter">{{ loop.index }}</div>
+            <div class="card-content">
+              <h4 class="artwork-title">{{ item['عنوان'] }}</h4>
+              <div class="author-info">
+                <div class="author-avatar">
+                  {{ item['first_name'][0] if item['first_name'] else 'ن' }}
+                </div>
+                <div class="author-details">
+                  <span class="author-name">
+                    {{ item['first_name'] }} {{ item['last_name'] }}
+                  </span>
+                  <span class="author-role">نویسنده</span>
+                </div>
+              </div>
+              <div class="text-muted mt-auto">
+                <small>
+                  <i class="bi bi-calendar me-1"></i>
+                  {% if item.created_at %}
+                    {{ item.created_at[:10] }}
+                  {% else %}
+                    تاریخ نامشخص
+                  {% endif %}
+                </small>
+              </div>
+            </div>
+            <a href="{{ url_for('view_item', cat='stories', item_id=item['شماره']) }}"
+               class="btn btn-view" title="مشاهده داستان">
+              <i class="bi bi-eye"></i>
+            </a>
+          </div>
+        {% else %}
+          <div class="empty-card">
+            <i class="bi bi-book empty-icon"></i>
+            <p class="empty-text">داستانی برای نمایش موجود نیست</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-4 mb-4 fade-in-up" style="animation-delay: 0.3s;">
+        <div class="category-header">
+          <div class="category-count" id="literature-count">{{ literature|length }}</div>
+          <h3 class="category-title">
+            <i class="bi bi-pen"></i>متون ادبی
+          </h3>
+          <small class="text-light opacity-75">نوشته‌های ادبی و تحلیلی</small>
+        </div>
+
+        {% for item in literature %}
+          <div class="content-card literature" data-category="literature" data-title="{{ item['عنوان'] }}" data-date="{{ item.created_at if item.created_at else '' }}">
+            <div class="artwork-counter">{{ loop.index }}</div>
+            <div class="card-content">
+              <h4 class="artwork-title">{{ item['عنوان'] }}</h4>
+              <div class="author-info">
+                <div class="author-avatar">
+                  {{ item['first_name'][0] if item['first_name'] else 'ن' }}
+                </div>
+                <div class="author-details">
+                  <span class="author-name">
+                    {{ item['first_name'] }} {{ item['last_name'] }}
+                  </span>
+                  <span class="author-role">نویسنده</span>
+                </div>
+              </div>
+              <div class="text-muted mt-auto">
+                <small>
+                  <i class="bi bi-calendar me-1"></i>
+                  {% if item.created_at %}
+                    {{ item.created_at[:10] }}
+                  {% else %}
+                    تاریخ نامشخص
+                  {% endif %}
+                </small>
+              </div>
+            </div>
+            <a href="{{ url_for('view_item', cat='literature', item_id=item['شماره']) }}"
+               class="btn btn-view" title="مشاهده متن ادبی">
+              <i class="bi bi-eye"></i>
+            </a>
+          </div>
+        {% else %}
+          <div class="empty-card">
+            <i class="bi bi-pen empty-icon"></i>
+            <p class="empty-text">متنی برای نمایش موجود نیست</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-4 text-center">
+    <p class="mb-2">© 2025 هنرکده فارسی | تمام حقوق محفوظ است</p>
+    <p class="text-light opacity-75 mb-0">
+      <small>حافظ فرهنگ و ادب فارسی</small>
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const searchBtn = document.getElementById('search-btn');
+    const searchWrapper = document.querySelector('.search-wrapper');
+    const searchInput = document.getElementById('search-input');
+
+    searchBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      searchWrapper.classList.toggle('active');
+      if (searchWrapper.classList.contains('active')) {
+        searchInput.focus();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!searchWrapper.contains(e.target)) {
+        searchWrapper.classList.remove('active');
+      }
+    });
+
+    searchInput.addEventListener('click', e => e.stopPropagation());
+
+    function filterByType(category) {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const artworks = document.querySelectorAll('[data-category]');
+      const columns = document.querySelectorAll('.col-md-4');
+
+      filterBtns.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      columns.forEach(column => {
+        if (category === 'all') {
+          column.style.display = 'block';
+          setTimeout(() => {
+            column.classList.add('fade-in-up');
+          }, 50);
+        } else {
+          const hasCategory = column.querySelector(`[data-category="${category}"]`);
+          if (hasCategory) {
+            column.style.display = 'block';
+            setTimeout(() => {
+              column.classList.add('fade-in-up');
+            }, 50);
+          } else {
+            column.classList.remove('fade-in-up');
+            setTimeout(() => {
+              column.style.display = 'none';
+            }, 300);
+          }
+        }
+      });
+
+      updateCounters();
+    }
+
+    function sortBy(sortType) {
+      const sortBtns = document.querySelectorAll('.sort-btn');
+      const columns = document.querySelectorAll('.col-md-4');
+
+      sortBtns.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      columns.forEach(column => {
+        const cards = Array.from(column.querySelectorAll('.content-card'));
+
+        cards.sort((a, b) => {
+          const titleA = a.dataset.title || '';
+          const titleB = b.dataset.title || '';
+          const dateA = a.dataset.date || '';
+          const dateB = b.dataset.date || '';
+
+          switch(sortType) {
+            case 'newest':
+              return dateB.localeCompare(dateA);
+            case 'oldest':
+              return dateA.localeCompare(dateB);
+            case 'title-asc':
+              return titleA.localeCompare(titleB, 'fa');
+            case 'title-desc':
+              return titleB.localeCompare(titleA, 'fa');
+            default:
+              return 0;
+          }
+        });
+
+        const container = column.querySelector('.category-header').nextElementSibling;
+        if (container) {
+          const parent = container.parentElement;
+          cards.forEach(card => {
+            parent.appendChild(card);
+          });
+        }
+
+        cards.forEach((card, index) => {
+          const counter = card.querySelector('.artwork-counter');
+          if (counter) {
+            counter.textContent = index + 1;
+          }
+        });
+      });
+    }
+
+    function updateCounters() {
+      const categories = ['poem', 'story', 'literature'];
+      categories.forEach(category => {
+        const visibleCards = document.querySelectorAll(`[data-category="${category}"]:not([style*="display: none"])`).length;
+        const header = document.querySelector(`.category-header #${category}-badge`);
+        const countElement = document.getElementById(`${category}-count`);
+
+        if (header) {
+          header.textContent = `${visibleCards} اثر`;
+        }
+        if (countElement) {
+          countElement.textContent = visibleCards;
+        }
+      });
+
+      const allBtn = document.querySelector('.filter-btn[onclick*="all"]');
+      const total = Array.from(document.querySelectorAll('[data-category]')).filter(card =>
+        card.closest('.col-md-4').style.display !== 'none'
+      ).length;
+
+      if (allBtn) {
+        const icon = allBtn.querySelector('i').cloneNode(true);
+        allBtn.innerHTML = '';
+        allBtn.appendChild(icon);
+        allBtn.appendChild(document.createTextNode(` همه آثار (${total})`));
+      }
+    }
+
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      const artworks = document.querySelectorAll('[data-category]');
+
+      artworks.forEach(artwork => {
+        const title = artwork.querySelector('.artwork-title').textContent.toLowerCase();
+        const author = artwork.querySelector('.author-name').textContent.toLowerCase();
+
+        if (title.includes(searchTerm) || author.includes(searchTerm)) {
+          artwork.style.display = 'block';
+          setTimeout(() => {
+            artwork.classList.add('fade-in-up');
+          }, 50);
+        } else {
+          artwork.classList.remove('fade-in-up');
+          setTimeout(() => {
+            artwork.style.display = 'none';
+          }, 300);
+        }
+      });
+
+      updateCounters();
+    });
+
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in-up').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      observer.observe(el);
+    });
+
+    document.querySelectorAll('.content-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-10px) scale(1.02)';
+      });
+
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCounters();
+      const newestBtn = document.querySelector('.sort-btn[onclick*="newest"]');
+      if (newestBtn) {
+        newestBtn.classList.add('active');
+        sortBy('newest');
+      }
+    });
+
+    const themeToggle = document.createElement('button');
+    themeToggle.innerHTML = '<i class="bi bi-moon-stars"></i>';
+    themeToggle.style.position = 'fixed';
+    themeToggle.style.bottom = '20px';
+    themeToggle.style.left = '20px';
+    themeToggle.style.zIndex = '9999';
+    themeToggle.style.background = 'linear-gradient(145deg, rgba(255, 204, 0, 0.8), rgba(255, 149, 0, 0.6))';
+    themeToggle.style.border = '2px solid rgba(255, 204, 0, 0.5)';
+    themeToggle.style.borderRadius = '50%';
+    themeToggle.style.width = '55px';
+    themeToggle.style.height = '55px';
+    themeToggle.style.color = '#000';
+    themeToggle.style.cursor = 'pointer';
+    themeToggle.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    themeToggle.style.boxShadow = '0 5px 20px rgba(255, 204, 0, 0.4)';
+    themeToggle.style.fontSize = '1.4rem';
+    themeToggle.title = 'تغییر به حالت روز';
+
+    themeToggle.style.animation = 'pulse 3s infinite';
+
+    const style = document.createElement('style');
+    style.textContent = `
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 5px 20px rgba(255, 204, 0, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 5px 25px rgba(255, 204, 0, 0.6); }
+    }
+    `;
+    document.head.appendChild(style);
+
+    themeToggle.addEventListener('mouseenter', () => {
+      themeToggle.style.transform = 'scale(1.15) rotate(15deg)';
+      themeToggle.style.background = 'linear-gradient(145deg, rgba(255, 204, 0, 0.9), rgba(255, 149, 0, 0.7))';
+      themeToggle.style.boxShadow = '0 8px 25px rgba(255, 204, 0, 0.6)';
+      themeToggle.style.animation = 'none';
+    });
+
+    themeToggle.addEventListener('mouseleave', () => {
+      themeToggle.style.transform = 'scale(1) rotate(0)';
+      themeToggle.style.background = 'linear-gradient(145deg, rgba(255, 204, 0, 0.8), rgba(255, 149, 0, 0.6))';
+      themeToggle.style.boxShadow = '0 5px 20px rgba(255, 204, 0, 0.4)';
+      themeToggle.style.animation = 'pulse 3s infinite';
+    });
+
+    function enableDayMode() {
+      document.body.classList.add('day-mode');
+      document.body.classList.remove('night-mode');
+      themeToggle.innerHTML = '<i class="bi bi-sun"></i>';
+      themeToggle.title = 'تغییر به حالت شب';
+      localStorage.setItem('theme', 'day');
+
+      themeToggle.style.background = 'linear-gradient(145deg, rgba(44, 45, 45, 0.9), rgba(26, 26, 26, 0.8))';
+      themeToggle.style.color = '#000';
+      themeToggle.style.borderColor = 'rgba(255, 204, 0, 0.3)';
+      themeToggle.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
+    }
+
+    function enableNightMode() {
+      document.body.classList.add('night-mode');
+      document.body.classList.remove('day-mode');
+      themeToggle.innerHTML = '<i class="bi bi-moon-stars"></i>';
+      themeToggle.title = 'تغییر به حالت روز';
+      localStorage.setItem('theme', 'night');
+
+      themeToggle.style.background = 'linear-gradient(145deg, rgba(255, 204, 0, 0.8), rgba(255, 149, 0, 0.6))';
+      themeToggle.style.color = '#000';
+      themeToggle.style.borderColor = 'rgba(255, 204, 0, 0.5)';
+      themeToggle.style.boxShadow = '0 5px 20px rgba(255, 204, 0, 0.4)';
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (savedTheme) {
+      if (savedTheme === 'day') {
+        enableDayMode();
+      } else {
+        enableNightMode();
+      }
+    } else {
+      enableNightMode();
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const isNightMode = document.body.classList.contains('night-mode');
+
+      if (isNightMode) {
+        enableDayMode();
+      } else {
+        enableNightMode();
+      }
+
+      themeToggle.style.transform = 'scale(1.2) rotate(180deg)';
+      setTimeout(() => {
+        themeToggle.style.transform = 'scale(1) rotate(0)';
+      }, 300);
+
+      updatePageForTheme();
+    });
+
+    function updatePageForTheme() {
+      const isNightMode = document.body.classList.contains('night-mode');
+      const filterBtns = document.querySelectorAll('.filter-btn, .sort-btn');
+      filterBtns.forEach(btn => {
+        if (isNightMode) {
+          btn.style.position = 'relative';
+          btn.style.zIndex = '100';
+        } else {
+          btn.style.position = 'relative';
+          btn.style.zIndex = '100';
+        }
+      });
+
+      const cards = document.querySelectorAll('.content-card');
+      cards.forEach(card => {
+        if (isNightMode) {
+          card.style.background = 'rgba(20, 20, 30, 0.7)';
+          card.style.backdropFilter = 'blur(12px)';
+          card.style.border = '1px solid rgba(255, 204, 0, 0.15)';
+          card.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.3)';
+          card.style.position = 'relative';
+          card.style.zIndex = '10';
+        } else {
+          card.style.background = '#ffffff';
+          card.style.backdropFilter = 'none';
+          card.style.border = 'none';
+          card.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+          card.style.position = 'relative';
+          card.style.zIndex = '10';
+        }
+      });
+
+      const categoryHeaders = document.querySelectorAll('.category-header');
+      categoryHeaders.forEach(header => {
+        if (isNightMode) {
+          header.style.background = 'rgba(255, 255, 255, 0.05)';
+          header.style.backdropFilter = 'blur(12px)';
+          header.style.border = '1px solid rgba(255, 204, 0, 0.15)';
+          header.style.position = 'relative';
+          header.style.zIndex = '50';
+        } else {
+          header.style.background = 'linear-gradient(135deg, #2c2d2d, #1a1a1a)';
+          header.style.backdropFilter = 'none';
+          header.style.border = '1px solid rgba(255, 204, 0, 0.2)';
+          header.style.position = 'relative';
+          header.style.zIndex = '50';
+        }
+      });
+
+      const emptyCards = document.querySelectorAll('.empty-card');
+      emptyCards.forEach(card => {
+        if (isNightMode) {
+          card.style.background = 'rgba(255, 255, 255, 0.05)';
+          card.style.border = '2px dashed rgba(255, 255, 255, 0.1)';
+          card.style.position = 'relative';
+          card.style.zIndex = '10';
+        } else {
+          card.style.background = 'linear-gradient(145deg, rgba(255,255,255,0.8), rgba(248,249,250,0.6))';
+          card.style.border = '2px dashed rgba(0,0,0,0.1)';
+          card.style.position = 'relative';
+          card.style.zIndex = '10';
+        }
+      });
+    }
+
+    updatePageForTheme();
+
+    document.body.appendChild(themeToggle);
+
+    const themeStyles = document.createElement('style');
+    themeStyles.textContent = `
+      body.night-mode {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+        color: #f0f0f0;
+      }
+
+      body.day-mode {
+        background: linear-gradient(135deg, #e8e8e8 0%, #f0f0f0 50%, #f8f8f8 100%);
+        color: #333;
+      }
+      body.night-mode .main-title {
+          color: #ffcc00 !important;
+          text-shadow:
+              0 0 10px rgba(255, 204, 0, 0.5),
+              0 0 20px rgba(255, 204, 0, 0.3),
+              0 2px 5px rgba(0, 0, 0, 0.5) !important;
+      }
+
+      body.day-mode .main-title {
+          color: #2c2d2d !important;
+          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+      }
+      @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      .category-filters,
+      .sorting-filters {
+        position: relative !important;
+        z-index: 100 !important;
+      }
+
+      .filter-btn,
+      .sort-btn {
+        position: relative !important;
+        z-index: 101 !important;
+      }
+
+      .theme-toggle {
+        z-index: 9999 !important;
+        position: fixed !important;
+      }
+
+      .navbar {
+        position: relative;
+        z-index: 1000;
+      }
+
+      body.night-mode::before,
+      body.day-mode::before {
+        z-index: -1 !important;
+      }
+
+      .content-card {
+        position: relative;
+        z-index: 10;
+      }
+
+      body.night-mode .artwork-title {
+        color: #ffffff;
+      }
+
+      body.day-mode .artwork-title {
+        color: #1a1a1a;
+      }
+
+      body.night-mode .author-name {
+        color: #ffffff;
+      }
+
+      body.day-mode .author-name {
+        color: #333;
+      }
+
+      body.night-mode .text-muted {
+        color: rgba(255, 255, 255, 0.7) !important;
+      }
+
+      body.day-mode .text-muted {
+        color: #6c757d !important;
+      }
+
+      body.night-mode .filter-btn,
+      body.night-mode .sort-btn {
+        background: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 204, 0, 0.2) !important;
+        color: #fff !important;
+      }
+
+      body.night-mode .filter-btn.active,
+      body.night-mode .sort-btn.active {
+        background: linear-gradient(135deg, #ffcc00, #ff9500) !important;
+        color: #000 !important;
+      }
+
+      body.day-mode .filter-btn,
+      body.day-mode .sort-btn {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        color: #333 !important;
+      }
+
+      body.day-mode .filter-btn.active,
+      body.day-mode .sort-btn.active {
+        background: linear-gradient(135deg, #ffcc00, #ff9500) !important;
+        color: #000 !important;
+      }
+    `;
+    document.head.appendChild(themeStyles);
+  </script>
+</body>
+</html>

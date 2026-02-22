@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>هنرکده فارسی | دریای فرهنگ و ادب</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+</head>
+<body style="background: linear-gradient(135deg, #d3d2d0 0%, #e8e8e8 50%, #f5f5f5 100%); min-height: 100vh;">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c2d2d;">
+      <div class="container">
+        <label class="navbar-brand nastaliq-brand" style="margin-right:10px;">هنرکده فارسی</label>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-flex justify-content-center" style="margin-right:100px;" id="navbarNav">
+            <ul class="navbar-nav custom-nav-graphic" style="display:inline-flex; transform: translateX(90px);">
+              <li class="nav-item"><a class="nav-link active" href="{{ url_for('index') }}">خانه</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('Authors') }}">نویسنده‌گان وشاعران</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('admin') }}">نگارش محتوا</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('categories') }}">آرشیو</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">آثار من</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">درباره ما</a></li>
+            </ul>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="search-wrapper">
+            <button id="search-btn" class="search-btn">
+              <i class="bi bi-search"></i>
+            </button>
+            <form class="search-form" action="{{ url_for('search') }}" method="GET">
+              <input id="search-input" type="text" name="q" placeholder="جستجو..." class="search-input">
+            </form>
+          </div>
+          <button type="button" class="search-btn" onclick="window.location.href='{{ url_for('login') }}'">
+            <i class="bi bi-box-arrow-in-right"></i>
+          </button>
+        </div>
+      </div>
+  </nav>
+
+  <div class="container mt-4">
+    <div class="hero-banner animate__animated animate__fadeIn">
+      <div class="floating-words">
+        <div class="word" style="top:10%; right:15%; animation-delay: 0s;">شعر</div>
+        <div class="word" style="top:30%; right:70%; animation-delay: 2s;">ادب</div>
+        <div class="word" style="top:60%; right:40%; animation-delay: 4s;">فرهنگ</div>
+        <div class="word" style="top:80%; right:80%; animation-delay: 6s;">هنر</div>
+        <div class="word" style="top:40%; right:20%; animation-delay: 8s;">نثر</div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title typewriter">به هنرکده فارسی خوش آمدید</h1>
+        <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-1s">
+          دریایی از اشعار ناب، داستان‌های دل‌انگیز و متون ادبی ارزشمند.
+          جایی که کلمات به رقص درمی‌آیند و معنا جان می‌گیرد.
+        </p>
+        <button class="btn btn-glow animate__animated animate__pulse animate__delay-2s animate__infinite"
+                onclick="window.location.href='{{ url_for('categories') }}'">
+          <i class="bi bi-journals me-2"></i>مشاهده آرشیو کامل
+        </button>
+
+        <div class="hero-stats">
+          <div class="stat-item" style="--order: 1;">
+            <span class="stat-number" id="poems-count">{{ poems_count }}</span>
+            <span class="stat-label">اثر شعری</span>
+          </div>
+          <div class="stat-item" style="--order: 2;">
+            <span class="stat-number" id="stories-count">{{ stories_count }}</span>
+            <span class="stat-label">داستان کوتاه</span>
+          </div>
+          <div class="stat-item" style="--order: 3;">
+            <span class="stat-number" id="literature-count">{{ literature_count }}</span>
+            <span class="stat-label">متن ادبی</span>
+          </div>
+          <div class="stat-item" style="--order: 4;">
+            <span class="stat-number" id="authors-count">{{ authors_count }}</span>
+            <span class="stat-label">نویسنده و شاعر</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="container my-5">
+    <h2 class="section-title animate__animated animate__fadeInDown">جدیدترین آثار</h2>
+
+    <div class="category-header animate__animated animate__fadeIn">
+      <div class="row text-center">
+        <div class="col-md-4"><i class="bi bi-journal-text me-2"></i>شعر</div>
+        <div class="col-md-4"><i class="bi bi-book me-2"></i>داستان کوتاه</div>
+        <div class="col-md-4"><i class="bi bi-pen me-2"></i>متن ادبی</div>
+      </div>
+    </div>
+
+    {% for r in rows %}
+    <div class="row g-3 align-items-center mb-4 animate__animated animate__fadeInUp"
+         style="animation-delay: {{ loop.index * 0.1 }}s;">
+
+      <div class="col-md-4">
+        {% if r.poem %}
+          <div class="content-card">
+            <div>
+              <div class="content-title">{{ r.poem['عنوان'] }}</div>
+              <div class="author-label">
+                <i class="bi bi-person-circle"></i>
+                <span>سراینده:</span>
+                {% if r.poem['first_name'] and r.poem['last_name'] %}
+                  <span class="author-name">{{ r.poem['first_name'] }} {{ r.poem['last_name'] }}</span>
+                {% elif r.poem['نام_نویسنده'] %}
+                  <span class="author-name">{{ r.poem['نام_نویسنده'] }}</span>
+                {% elif r.poem['author_name'] %}
+                  <span class="author-name">{{ r.poem['author_name'] }}</span>
+                {% elif r.poem['author'] %}
+                  <span class="author-name">{{ r.poem['author'] }}</span>
+                {% else %}
+                  <span class="author-name">ناشناس</span>
+                {% endif %}
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar"></div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <small class="text-muted">
+                <i class="bi bi-calendar me-1"></i>
+                {% if r.poem.publish_date and r.poem.publish_date != '' %}
+                  انتشار: {{ r.poem.publish_date }}
+                {% elif r.poem.created_at %}
+                  ایجاد: {{ r.poem.created_at[:10] }}
+                {% else %}
+                  تازه اضافه شده
+                {% endif %}
+              </small>
+              <a href="{{ url_for('view_item', cat='poems', item_id=r.poem['شماره']) }}"
+                 class="btn btn-view">
+                <i class="bi bi-eye-fill"></i>
+              </a>
+            </div>
+          </div>
+        {% else %}
+          <div class="content-card text-center text-muted py-4">
+            <i class="bi bi-journal-x display-6 mb-3"></i>
+            <p class="mb-0">شعری موجود نیست</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="col-md-4">
+        {% if r.story %}
+          <div class="content-card">
+            <div>
+              <div class="content-title">{{ r.story['عنوان'] }}</div>
+              <div class="author-label">
+                <i class="bi bi-person-circle"></i>
+                <span>نویسنده:</span>
+                {% if r.story['first_name'] and r.story['last_name'] %}
+                  <span class="author-name">{{ r.story['first_name'] }} {{ r.story['last_name'] }}</span>
+                {% elif r.story['نام_نویسنده'] %}
+                  <span class="author-name">{{ r.story['نام_نویسنده'] }}</span>
+                {% elif r.story['author_name'] %}
+                  <span class="author-name">{{ r.story['author_name'] }}</span>
+                {% elif r.story['author'] %}
+                  <span class="author-name">{{ r.story['author'] }}</span>
+                {% else %}
+                  <span class="author-name">ناشناس</span>
+                {% endif %}
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar"></div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <small class="text-muted">
+                <i class="bi bi-calendar me-1"></i>
+                {% if r.story.publish_date and r.story.publish_date != '' %}
+                  انتشار: {{ r.story.publish_date }}
+                {% elif r.story.created_at %}
+                  ایجاد: {{ r.story.created_at[:10] }}
+                {% else %}
+                  تازه اضافه شده
+                {% endif %}
+              </small>
+              <a href="{{ url_for('view_item', cat='stories', item_id=r.story['شماره']) }}"
+                 class="btn btn-view">
+                <i class="bi bi-eye-fill"></i>
+              </a>
+            </div>
+          </div>
+        {% else %}
+          <div class="content-card text-center text-muted py-4">
+            <i class="bi bi-book display-6 mb-3"></i>
+            <p class="mb-0">داستانی موجود نیست</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="col-md-4">
+        {% if r.literature %}
+          <div class="content-card">
+            <div>
+              <div class="content-title">{{ r.literature['عنوان'] }}</div>
+              <div class="author-label">
+                <i class="bi bi-person-circle"></i>
+                <span>نویسنده:</span>
+                {% if r.literature['first_name'] and r.literature['last_name'] %}
+                  <span class="author-name">{{ r.literature['first_name'] }} {{ r.literature['last_name'] }}</span>
+                {% elif r.literature['نام_نویسنده'] %}
+                  <span class="author-name">{{ r.literature['نام_نویسنده'] }}</span>
+                {% elif r.literature['author_name'] %}
+                  <span class="author-name">{{ r.literature['author_name'] }}</span>
+                {% elif r.literature['author'] %}
+                  <span class="author-name">{{ r.literature['author'] }}</span>
+                {% else %}
+                  <span class="author-name">ناشناس</span>
+                {% endif %}
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar"></div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <small class="text-muted">
+                <i class="bi bi-calendar me-1"></i>
+                {% if r.literature.publish_date and r.literature.publish_date != '' %}
+                  انتشار: {{ r.literature.publish_date }}
+                {% elif r.literature.created_at %}
+                  ایجاد: {{ r.literature.created_at[:10] }}
+                {% else %}
+                  تازه اضافه شده
+                {% endif %}
+              </small>
+              <a href="{{ url_for('view_item', cat='literature', item_id=r.literature['شماره']) }}"
+                 class="btn btn-view">
+                <i class="bi bi-eye-fill"></i>
+              </a>
+            </div>
+          </div>
+        {% else %}
+          <div class="content-card text-center text-muted py-4">
+            <i class="bi bi-pen display-6 mb-3"></i>
+            <p class="mb-0">متنی موجود نیست</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+
+  <div class="container my-5">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="content-card h-100 animate__animated animate__fadeInLeft">
+          <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #ffcc00, #ff9900);">
+              <i class="bi bi-lightning-charge-fill text-white fs-4"></i>
+            </div>
+            <h5 class="mb-0 fw-bold">آثار برجسته روز</h5>
+          </div>
+          <p class="text-muted">
+            هر روز با انتخاب بهترین آثار از میان هزاران شعر و داستان، تجربه‌ای منحصر به فرد از ادبیات فارسی را برای شما خلق می‌کنیم.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="content-card h-100 animate__animated animate__fadeInRight">
+          <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #2c2d2d, #4a4a4a);">
+              <i class="bi bi-people-fill text-white fs-4"></i>
+            </div>
+            <h5 class="mb-0 fw-bold">جامعه ادبی</h5>
+          </div>
+          <p class="text-muted">
+            به جمع نویسندگان و شاعران ما بپیوندید، آثار خود را به اشتراک بگذارید و از نقدهای سازنده بهره‌مند شوید.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="py-4 text-center mt-5" style="background: linear-gradient(90deg, #2c2d2d, #1a1a1a); color: #fff; border-top: 3px solid #ffcc00;">
+    <p class="mb-2">© 2025 هنرکده فارسی | تمام حقوق محفوظ است</p>
+    <p class="text-muted mb-0">
+      <small>این وب‌سایت با افتخار از فرهنگ و ادبیات فارسی پاسداری می‌کند</small>
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const searchBtn = document.getElementById('search-btn');
+    const searchWrapper = document.querySelector('.search-wrapper');
+    const searchInput = document.getElementById('search-input');
+
+    searchBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      searchWrapper.classList.toggle('active');
+      if (searchWrapper.classList.contains('active')) {
+        searchInput.focus();
+      }
+    });
+
+    searchInput.addEventListener('click', e => e.stopPropagation());
+
+    document.addEventListener('click', e => {
+      if (!searchWrapper.contains(e.target)) {
+        searchWrapper.classList.remove('active');
+        searchInput.value = "";
+      }
+    });
+
+    function animateCounter(element, target) {
+      let current = 0;
+      const increment = target / 50;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          element.textContent = Math.round(target);
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.round(current);
+        }
+      }, 30);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const counters = document.querySelectorAll('.stat-number');
+      counters.forEach(counter => {
+        const target = parseInt(counter.textContent) || 0;
+        if (target > 0) {
+          counter.textContent = '0';
+          setTimeout(() => {
+            animateCounter(counter, target);
+          }, 500);
+        }
+      });
+    });
+
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.content-card').forEach(card => {
+      observer.observe(card);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const rowsCount = {{ rows|length }};
+      animateCount(document.getElementById('poems-count'), rowsCount * 3);
+      animateCount(document.getElementById('stories-count'), rowsCount * 2);
+      animateCount(document.getElementById('authors-count'), 50);
+    });
+
+    window.addEventListener('scroll', function() {
+      const scrolled = window.pageYOffset;
+      const heroBanner = document.querySelector('.hero-banner');
+      if (heroBanner) {
+        heroBanner.style.transform = `translateY(${scrolled * 0.05}px)`;
+      }
+    });
+
+
+  </script>
+</body>
+</html>

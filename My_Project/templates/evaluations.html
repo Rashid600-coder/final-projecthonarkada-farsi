@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ارزیابی‌های من</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Vazir', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .evaluation-card {
+            background: white;
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .evaluation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .score-badge {
+            font-size: 1.1rem;
+            padding: 8px 16px;
+            border-radius: 50px;
+        }
+        .criteria-item {
+            border-right: 3px solid #4e54c8;
+            padding-right: 15px;
+            margin: 10px 0;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+        .category-badge {
+            background: linear-gradient(45deg, #8e2de2, #4a00e0);
+            color: white;
+        }
+        .progress-bar-custom {
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        }
+        .comment-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2575fc;
+        }
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .btn-back {
+          color: white;
+          font-size: 1.7rem;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+      }
+
+      .btn-back:hover {
+          color: #ffcc00;
+          cursor: pointer;
+      }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">
+                    <i class="bi bi-clipboard-check"></i>
+                    ارزیابی‌های من
+                </h1>
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="bi bi-arrow-left-circle"></i>
+                </a>
+
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card bg-white bg-opacity-25 border-0">
+                        <div class="card-body text-center">
+                            <h6 class="text-white-50">تعداد ارزیابی‌ها</h6>
+                            <h2 class="text-white mb-0">{{ total if total else 0 }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card bg-white bg-opacity-25 border-0">
+                        <div class="card-body">
+                            <h6 class="text-white-50">خوش آمدید</h6>
+                            <h4 class="text-white">{{ username }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
+
+        {% if message %}
+        <div class="empty-state">
+            <i class="bi bi-clipboard-x"></i>
+            <h3 class="text-muted mb-3">{{ message }}</h3>
+        </div>
+        {% else %}
+
+        <div class="row">
+            {% for eval in evaluations %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="evaluation-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge category-badge">
+                                <i class="bi bi-tag"></i>
+                                {{ eval.category }}
+                            </span>
+                            <span class="badge bg-secondary">
+                                کد: {{ eval.item_id }}
+                            </span>
+                        </div>
+
+                        <div class="text-center mb-4">
+                            <span class="score-badge bg-success text-white">
+                                میانگین امتیاز: {{ eval.average_score }}/5
+                            </span>
+                        </div>
+
+                        <div class="row text-center mb-3">
+                            {% for metric in [
+                                ('fluency', 'روانی'),
+                                ('creativity', 'خلاقیت'),
+                                ('emotional_impact', 'تأثیر عاطفی'),
+                                ('imagery', 'تصویرسازی'),
+                                ('coherence', 'انسجام'),
+                                ('format_suitability', 'مناسب‌بودن قالب'),
+                                ('clarity', 'شفافیت'),
+                                ('overall_value', 'ارزش کلی')
+                            ] %}
+                            <div class="col-6 col-md-3 mb-2">
+                                <div class="metric-value">{{ eval[metric[0]] }}</div>
+                                <div class="metric-label">{{ metric[1] }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="progress mb-3">
+                            <div class="progress-bar progress-bar-custom"
+                                 role="progressbar"
+                                 style="width: {{ eval.average_score * 5 }}%"
+                                 aria-valuenow="{{ eval.average_score * 5 }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+
+                        {% if eval.additional_comment %}
+                        <div class="comment-box">
+                            <h6 class="mb-2"><i class="bi bi-chat-left-text"></i> نظر تکمیلی:</h6>
+                            <p class="mb-0">{{ eval.additional_comment }}</p>
+                        </div>
+                        {% endif %}
+
+                        <div class="mt-3 text-muted small">
+                            <i class="bi bi-clock"></i>
+                            {{ eval.timestamp }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if evaluations %}
+        <div class="card mt-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-graph-up"></i>
+                    آمار کلی ارزیابی‌ها
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-primary">{{ "%.1f"|format(evaluations|map(attribute='fluency')|sum / evaluations|length) }}</h4>
+                            <small class="text-muted">میانگین روانی</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-success">{{ "%.1f"|format(evaluations|map(attribute='creativity')|sum / evaluations|length) }}</h4>
+                            <small class="text-muted">میانگین خلاقیت</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-danger">{{ "%.1f"|format(evaluations|map(attribute='emotional_impact')|sum / evaluations|length) }}</h4>
+                            <small class="text-muted">میانگین تأثیر عاطفی</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-warning">{{ "%.1f"|format(evaluations|map(attribute='average_score')|sum / evaluations|length) }}</h4>
+                            <small class="text-muted">میانگین کلی</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.evaluation-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('animate__animated', 'animate__fadeInUp');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>نتایج جستجو - آثار من</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Vazir", sans-serif;
+            background: #d3d2d0;
+        }
+        h3.section-title {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #222;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 15px;
+            background: #ebebef;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        .card-title {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .button-column {
+          position: fixed;
+          top: 20px;
+          left: 100px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          z-index: 1000;
+        }
+
+        .btn-back {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          color: #000;
+          text-decoration: none;
+          position: absolute;
+          top: 10px;
+          left: 20px;
+          transition: color 0.3s ease;
+          z-index: 2000; 
+        }
+
+
+        .btn-back::after {
+          content: "";
+          position: absolute;
+          width: 0%;
+          height: 2px;
+          left: 50%;
+          bottom: 0;
+          background-color: #ffcc00;
+          transition: width 0.3s ease;
+          border-radius: 2px;
+          transform: translateX(-50%);
+          z-index: 2;
+        }
+
+        .btn-back:hover {
+          color: #ffcc00;
+        }
+
+        .btn-back:hover::after {
+          width: 100%;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #000;
+            text-decoration: none;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            position: relative;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+        .btn-action::after {
+            content: "";
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            left: 50%;
+            bottom: 0;
+            background-color: #ffcc00;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+        .btn-action:hover { color: #ffcc00; }
+        .btn-action:hover::after { width: 100%; }
+
+
+    </style>
+</head>
+<body class="p-4">
+
+<div class="container">
+    <h2 class="text-center mb-4">نتایج جستجو برای <span>"{{ query }}"</span></h2>
+    <div class="button-column">
+        <a href="{{ url_for('my_artworks') }}" class="btn-back">
+          <i class="bi bi-arrow-left-circle"></i>
+        </a>
+    </div>
+    <h3 class="section-title">شعر</h3>
+    {% set poems = results|selectattr("category", "equalto", "poems")|list %}
+    {% if poems %}
+        <div class="row">
+            {% for artwork in poems %}
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ artwork.title }}</h5>
+                        <p class="card-text text-muted">
+                            {{ artwork.content[:150] }}{% if artwork.content|length > 150 %}...{% endif %}
+                        </p>
+                        <div class="text-center">
+                            <a href="{{ url_for('view_item', cat=artwork.category, item_id=artwork.id) }}" class="btn-action mx-1">
+                              <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{{ url_for('edit_artwork', cat=artwork.category, item_id=artwork.id) }}" class="btn-action mx-1">
+                              <i class="bi bi-pen"></i>
+                            </a>
+                            <form action="{{ url_for('delete_artwork', cat=artwork.category, item_id=artwork.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-action mx-1" onclick="return confirm('آیا مطمئن هستید؟')">
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-result">هیچ شعری یافت نشد.</div>
+    {% endif %}
+
+    <h3 class="section-title">داستان کوتاه</h3>
+    {% set stories = results|selectattr("category", "equalto", "stories")|list %}
+    {% if stories %}
+        <div class="row">
+            {% for artwork in stories %}
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ artwork.title }}</h5>
+                        <p class="card-text text-muted">
+                            {{ artwork.content[:150] }}{% if artwork.content|length > 150 %}...{% endif %}
+                        </p>
+                        <div class="text-center">
+                            <a href="{{ url_for('view_item', cat=artwork.category, item_id=artwork.id) }}" class="btn-action mx-1">
+                              <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{{ url_for('edit_artwork', cat=artwork.category, item_id=artwork.id) }}" class="btn-action mx-1">
+                              <i class="bi bi-pen"></i>
+                            </a>
+                            <form action="{{ url_for('delete_artwork', cat=artwork.category, item_id=artwork.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-action mx-1" onclick="return confirm('آیا مطمئن هستید؟')">
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-result">هیچ داستان کوتاهی یافت نشد.</div>
+    {% endif %}
+
+    <h3 class="section-title">متن ادبی</h3>
+    {% set literature = results|selectattr("category", "equalto", "literature")|list %}
+    {% if literature %}
+        <div class="row">
+            {% for artwork in literature %}
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ artwork.title }}</h5>
+                        <p class="card-text text-muted">
+                            {{ artwork.content[:150] }}{% if artwork.content|length > 150 %}...{% endif %}
+                        </p>
+                        <div class="text-center">
+                            <a href="{{ url_for('view_item', cat=artwork.category, item_id=artwork.id) }}" class="btn-action mx-1">
+                              <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{{ url_for('edit_artwork', cat=artwork.category, item_id=artwork.id) }}" class="btn-action mx-1">
+                              <i class="bi bi-pen"></i>
+                            </a>
+                            <form action="{{ url_for('delete_artwork', cat=artwork.category, item_id=artwork.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-action mx-1" onclick="return confirm('آیا مطمئن هستید؟')">
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div>هیچ متن ادبی یافت نشد.</div>
+    {% endif %}
+
+</div>
+</body>
+</html>

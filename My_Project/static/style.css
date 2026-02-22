@@ -1,0 +1,44 @@
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn/Vazirmatn-font-face.css');
+
+body {
+  font-family: 'Vazirmatn', sans-serif;
+  direction: rtl;
+  background-color: #f8f9fa;
+}
+
+/* Navbar gradient */
+.bg-gradient {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+}
+
+/* Hero */
+.hero {
+  height: 80vh;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+}
+
+/* Cards hover */
+.hover-card {
+  transition: transform .3s, box-shadow .3s;
+}
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Footer */
+.footer {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+}
+
+@font-face {
+  font-family: 'IranNastaliq';
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/iran-nastaliq-font/dist/IRAN_Nastaliq.woff') format('woff');
+}
+
+.nastaliq-brand {
+  font-family: 'IranNastaliq', serif !important;
+  font-size: 4rem; /* سایز بزرگتر */
+
+}

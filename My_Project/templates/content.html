@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ item['عنوان'] if item else 'موردی یافت نشد' }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/content.css') }}">
+</head>
+
+<body>
+  <div class="container py-5">
+    <div class="button-column mb-3">
+      <a href="javascript:history.back()" class="btn-back">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+    </div>
+
+    {% if item %}
+      <div class="content-header">
+        <div class="content-title-section">
+          <h6 class="text-muted">{{ category_name }}</h6>
+          <h2>{{ item['عنوان'] }}</h2>
+
+          {% if item.get('status') == 'private' %}
+            <span class="status-badge status-private">
+              <i class="bi bi-lock-fill"></i>
+              خصوصی
+            </span>
+          {% else %}
+            <span class="status-badge status-public">
+              <i class="bi bi-globe"></i>
+              عمومی
+            </span>
+          {% endif %}
+
+          {% if item.get('readability') %}
+            {% if item.get('readability') == 'easy' %}
+              <span class="readability-badge readability-easy">سطح آسان</span>
+            {% elif item.get('readability') == 'medium' %}
+              <span class="readability-badge readability-medium">سطح متوسط</span>
+            {% elif item.get('readability') == 'hard' %}
+              <span class="readability-badge readability-hard">سطح پیشرفته</span>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <div class="content-meta-section">
+          {% if item.get('publish_date') %}
+            <div class="meta-item">
+              <i class="bi bi-calendar-event"></i>
+              <span>تاریخ انتشار: {{ item['publish_date'] }}</span>
+            </div>
+          {% endif %}
+
+          {% if item.get('created_at') %}
+            <div class="meta-item">
+              <i class="bi bi-clock"></i>
+              <span>ایجاد شده در: {{ item['created_at'][:16] if item['created_at']|length > 10 else item['created_at'] }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="author-info">
+        <div class="d-flex align-items-center">
+          {% if item.get('author_photo') and item['author_photo'] != 'default-avatar.png' %}
+            <img src="{{ url_for('static', filename='profile_pics/' + item['author_photo']) }}"
+                 class="author-avatar"
+                 alt="{{ item['first_name'] }} {{ item['last_name'] }}">
+          {% else %}
+            <div class="author-avatar d-flex align-items-center justify-content-center"
+                 style="background: #e0e0e0; color: #999;">
+              <i class="bi bi-person-fill" style="font-size: 1.5rem;"></i>
+            </div>
+          {% endif %}
+
+          <div>
+            {% if item['first_name'] and item['last_name'] %}
+              {% if category_name == "شعر" %}
+                <h5 class="mb-1">سراینده: {{ item['first_name'] }} {{ item['last_name'] }}</h5>
+              {% else %}
+                <h5 class="mb-1">نویسنده: {{ item['first_name'] }} {{ item['last_name'] }}</h5>
+              {% endif %}
+            {% else %}
+              {% if category_name == "شعر" %}
+                <h5 class="mb-1">سراینده: ناشناس</h5>
+              {% else %}
+                <h5 class="mb-1">نویسنده: ناشناس</h5>
+              {% endif %}
+            {% endif %}
+
+            {% if item.get('author_bio') %}
+              <p class="mb-0 text-muted" style="font-size: 0.9rem;">{{ item['author_bio'] }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if item.get('tags') %}
+        <div class="mt-3">
+          <h6><i class="bi bi-tags"></i> برچسب‌ها:</h6>
+          <div>
+            {% for tag in item['tags'].split(',') %}
+              {% if tag.strip() %}
+                <span class="tag-badge">{{ tag.strip() }}</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if item.get('status') == 'private' %}
+        <div class="private-alert">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2" style="color: #f44336; font-size: 1.2rem;"></i>
+            <div>
+              <strong>این محتوا خصوصی است</strong>
+              <p class="mb-0" style="font-size: 0.9rem;">
+                فقط شما و نویسنده می‌توانید این محتوا را مشاهده کنید.
+                {% if item.get('is_owner') %}
+                  <span class="text-success">شما مالک این محتوا هستید.</span>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="content-card mt-4">
+        <div style="white-space: pre-wrap; line-height: 1.8; font-size: 1.1rem;">
+          {{ item['محتوا'] }}
+        </div>
+
+        <div class="meta-info mt-4">
+          <h6><i class="bi bi-info-circle"></i> اطلاعات محتوا</h6>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="meta-item">
+                <i class="bi bi-card-text"></i>
+                <span>تعداد کلمات: {{ item['محتوا']|wordcount }}</span>
+              </div>
+              <div class="meta-item">
+                <i class="bi bi-text-center"></i>
+                <span>تعداد کاراکترها: {{ item['محتوا']|length }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              {% if item.get('readability') %}
+                <div class="meta-item">
+                  <i class="bi bi-bar-chart"></i>
+                  <span>سطح خوانایی:
+                    {% if item['readability'] == 'easy' %}
+                      <span class="readability-badge readability-easy">آسان</span>
+                    {% elif item['readability'] == 'medium' %}
+                      <span class="readability-badge readability-medium">متوسط</span>
+                    {% elif item['readability'] == 'hard' %}
+                      <span class="readability-badge readability-hard">پیشرفته</span>
+                    {% endif %}
+                  </span>
+                </div>
+              {% endif %}
+              <div class="meta-item">
+                <i class="bi bi-person-check"></i>
+                <span>وضعیت:
+                  {% if item.get('status') == 'private' %}
+                    <span class="status-badge status-private">خصوصی</span>
+                  {% else %}
+                    <span class="status-badge status-public">عمومی</span>
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-around align-items-center mt-4">
+          <div class="d-flex align-items-center position-relative">
+            <button id="like-btn" class="btn-action d-flex align-items-center me-2">
+              <i id="like-icon" class="bi bi-hand-thumbs-up"></i>
+            </button>
+            <a href="javascript:void(0)" id="like-count" class="ms-1 text-decoration-none">0</a>
+            <div id="like-section" class="card p-3 mt-2">
+              <h6>لایک‌کنندگان</h6>
+              <ul id="likes-list" class="list-unstyled mb-0">
+                <li class="text-muted">هنوز کسی لایک نکرده</li>
+              </ul>
+            </div>
+          </div>
+
+          <button id="comment-btn" class="btn-action d-flex align-items-center">
+            <i class="bi bi-chat-dots"></i>
+            <span id="comment-count" class="ms-2">0</span>
+          </button>
+
+          <button id="share-btn" class="btn-action d-flex align-items-center">
+            <i class="bi bi-share"></i>
+            <span class="ms-2"></span>
+          </button>
+
+          <button id="evaluate-btn" class="btn-action evaluate-button d-flex align-items-center" title="ارزیابی محتوا">
+            <i class="bi bi-stars"></i>
+            <span class="evaluate-label">ارزیابی</span>
+          </button>
+        </div>
+
+        <div id="comment-section" class="mt-3" style="display: none;">
+          <div class="card p-3">
+            <h6><i class="bi bi-chat-left-text"></i> نظرها</h6>
+            <div id="comments-list" class="mb-3"></div>
+            <form id="comment-form" class="d-flex">
+              <input type="text" id="comment-input" class="form-control" placeholder="نظر خود را بنویسید..." required>
+              <button type="submit" class="btn btn-primary ms-2">
+                <i class="bi bi-send"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    {% else %}
+      <div class="alert alert-warning text-center">
+        <i class="bi bi-exclamation-triangle"></i>
+        آیتم مورد نظر یافت نشد.
+        {% if message %}
+          <p class="mt-2">{{ message }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="modal fade" id="evaluateModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content evaluation-modal">
+        <div class="modal-header evaluation-header">
+          <div class="evaluation-title-wrapper">
+            <i class="bi bi-stars evaluation-title-icon"></i>
+            <h5 class="modal-title">ارزیابی محتوای ادبی</h5>
+          </div>
+        </div>
+
+        <div class="modal-body evaluation-body">
+          <div class="floating-stars">
+            <div class="star star-1"></div>
+            <div class="star star-2"></div>
+            <div class="star star-3"></div>
+            <div class="star star-4"></div>
+            <div class="star star-5"></div>
+          </div>
+
+          <form id="evaluation-form">
+            <div class="evaluation-criteria card-criteria">
+              <div class="criteria-header">
+                <span class="criteria-number">1</span>
+                <h6 class="criteria-title">روانی و صحت زبانی</h6>
+                <i class="bi bi-chat-square-text-fill criteria-icon"></i>
+              </div>
+              <p class="criteria-description">نگارش درست، خوانایی، بدون غلط آزاردهنده</p>
+              <div class="star-rating">
+                <div class="rating-scale">
+                  <span>خیلی ضعیف</span>
+                  <span>ضعیف</span>
+                  <span>متوسط</span>
+                  <span>خوب</span>
+                  <span>عالی</span>
+                </div>
+                <div class="stars-container">
+                  <button type="button" class="star-btn" data-value="1">
+                    <i class="bi bi-star"></i>
+                    <span class="tooltip-text">خیلی ضعیف</span>
+                  </button>
+                  <button type="button" class="star-btn" data-value="2">
+                    <i class="bi bi-star"></i>
+                    <span class="tooltip-text">ضعیف</span>
+                  </button>
+                  <button type="button" class="star-btn" data-value="3">
+                    <i class="bi bi-star"></i>
+                    <span class="tooltip-text">متوسط</span>
+                  </button>
+                  <button type="button" class="star-btn" data-value="4">
+                    <i class="bi bi-star"></i>
+                    <span class="tooltip-text">خوب</span>
+                  </button>
+                  <button type="button" class="star-btn" data-value="5">
+                    <i class="bi bi-star"></i>
+                    <span class="tooltip-text">عالی</span>
+                  </button>
+                </div>
+              </div>
+              <input type="hidden" name="fluency" id="fluency" required>
+            </div>
+
+            <div class="evaluation-criteria card-criteria">
+              <div class="criteria-header">
+                <span class="criteria-number">2</span>
+                <h6 class="criteria-title">خلاقیت و تازگی اثر</h6>
+                <i class="bi bi-lightbulb-fill criteria-icon"></i>
+              </div>
+              <p class="criteria-description">ایده جدید، دوری از کلیشه</p>
+              <div class="star-rating">
+                <div class="stars-container">
+                  <button type="button" class="star-btn" data-value="1"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="2"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="3"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="4"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="5"><i class="bi bi-star"></i></button>
+                </div>
+              </div>
+              <input type="hidden" name="creativity" id="creativity" required>
+            </div>
+
+            <div class="evaluation-criteria card-criteria">
+              <div class="criteria-header">
+                <span class="criteria-number">3</span>
+                <h6 class="criteria-title">تأثیرگذاری احساسی</h6>
+                <i class="bi bi-heart-fill criteria-icon"></i>
+              </div>
+              <p class="criteria-description">درگیر کردن احساس و ذهن مخاطب</p>
+              <div class="star-rating">
+                <div class="stars-container">
+                  <button type="button" class="star-btn" data-value="1"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="2"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="3"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="4"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="5"><i class="bi bi-star"></i></button>
+                </div>
+              </div>
+              <input type="hidden" name="emotional_impact" id="emotional_impact" required>
+            </div>
+
+            <div class="evaluation-criteria card-criteria">
+              <div class="criteria-header">
+                <span class="criteria-number">4</span>
+                <h6 class="criteria-title">تصویرسازی و زیبایی بیان</h6>
+                <i class="bi bi-palette-fill criteria-icon"></i>
+              </div>
+              <p class="criteria-description">تشبیه، استعاره، توصیف مؤثر</p>
+              <div class="star-rating">
+                <div class="stars-container">
+                  <button type="button" class="star-btn" data-value="1"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="2"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="3"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="4"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="5"><i class="bi bi-star"></i></button>
+                </div>
+              </div>
+              <input type="hidden" name="imagery" id="imagery" required>
+            </div>
+
+            <div class="evaluation-criteria card-criteria">
+              <div class="criteria-header">
+                <span class="criteria-number">5</span>
+                <h6 class="criteria-title">انسجام و ساختار کلی</h6>
+                <i class="bi bi-puzzle-fill criteria-icon"></i>
+              </div>
+              <p class="criteria-description">پیوستگی اجزا، شروع و پایان مناسب</p>
+              <div class="star-rating">
+                <div class="stars-container">
+                  <button type="button" class="star-btn" data-value="1"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="2"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="3"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="4"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="5"><i class="bi bi-star"></i></button>
+                </div>
+              </div>
+              <input type="hidden" name="coherence" id="coherence" required>
+            </div>
+
+            <div class="evaluation-criteria card-criteria">
+              <div class="criteria-header">
+                <span class="criteria-number">6</span>
+                <h6 class="criteria-title">تناسب با قالب ادبی</h6>
+                <i class="bi bi-book-fill criteria-icon"></i>
+              </div>
+              <p class="criteria-description">شعر/داستان/متن ادبی بودنِ واقعی</p>
+              <div class="star-rating">
+                <div class="stars-container">
+                  <button type="button" class="star-btn" data-value="1"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="2"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="3"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="4"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="5"><i class="bi bi-star"></i></button>
+                </div>
+              </div>
+              <input type="hidden" name="format_suitability" id="format_suitability" required>
+            </div>
+
+            <div class="evaluation-criteria card-criteria">
+              <div class="criteria-header">
+                <span class="criteria-number">7</span>
+                <h6 class="criteria-title">وضوح پیام یا مفهوم</h6>
+                <i class="bi bi-eye-fill criteria-icon"></i>
+              </div>
+              <p class="criteria-description">معنا قابل درک ولی نه سطحی</p>
+              <div class="star-rating">
+                <div class="stars-container">
+                  <button type="button" class="star-btn" data-value="1"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="2"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="3"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="4"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="5"><i class="bi bi-star"></i></button>
+                </div>
+              </div>
+              <input type="hidden" name="clarity" id="clarity" required>
+            </div>
+
+            <div class="evaluation-criteria card-criteria">
+              <div class="criteria-header">
+                <span class="criteria-number">8</span>
+                <h6 class="criteria-title">ارزش کلی اثر</h6>
+                <i class="bi bi-award-fill criteria-icon"></i>
+              </div>
+              <p class="criteria-description">آیا خواندنش ارزش داشت؟</p>
+              <div class="star-rating">
+                <div class="stars-container">
+                  <button type="button" class="star-btn" data-value="1"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="2"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="3"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="4"><i class="bi bi-star"></i></button>
+                  <button type="button" class="star-btn" data-value="5"><i class="bi bi-star"></i></button>
+                </div>
+              </div>
+              <input type="hidden" name="overall_value" id="overall_value" required>
+            </div>
+
+            <div class="comment-section">
+              <div class="comment-header">
+                <i class="bi bi-pen-fill"></i>
+                <h6>نظر تکمیلی شما</h6>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control comment-textarea"
+                          placeholder="نظر خود را اینجا بنویسید..."
+                          id="additional_comment"
+                          name="additional_comment"></textarea>
+                <label for="additional_comment">نظرات، پیشنهادات یا نقاط قوت/ضعف اضافی...</label>
+              </div>
+              <div class="char-counter">
+                <span id="char-count">0</span> / 500 کاراکتر
+              </div>
+            </div>
+
+            <div class="submit-section">
+              <button type="submit" class="btn-submit-evaluation">
+                <span class="submit-text">
+                  <i class="bi bi-send-fill"></i>
+                  ثبت ارزیابی
+                </span>
+                <span class="submit-loader">
+                  <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  در حال ارسال...
+                </span>
+              </button>
+
+              <div class="progress-container">
+                <div class="progress">
+                  <div class="progress-bar" id="evaluation-progress" role="progressbar"></div>
+                </div>
+                <div class="progress-text">
+                  <span id="progress-percent">0%</span>
+                  تکمیل ارزیابی
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const cat = "{{ category_name }}";
+    const itemId = "{{ item['شماره'] if item else '' }}";
+    const username = "{{ session.get('username', '') }}";
+    const isOwner = {{ 'true' if item and item.get('is_owner') else 'false' }};
+    const isPrivate = {{ 'true' if item and item.get('status') == 'private' else 'false' }};
+
+    let liked = false;
+    function wordCount(text) {
+      return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    }
+
+    if (isPrivate && !isOwner && username !== "{{ item['username'] if item else '' }}") {
+      document.addEventListener('DOMContentLoaded', function() {
+        const likeBtn = document.getElementById('like-btn');
+        const commentBtn = document.getElementById('comment-btn');
+        const commentForm = document.getElementById('comment-form');
+
+        if (likeBtn) likeBtn.disabled = true;
+        if (commentBtn) commentBtn.disabled = true;
+        if (commentForm) commentForm.style.display = 'none';
+      });
+    }
+
+    if (itemId) {
+      fetch(`/interactions/${cat}/${itemId}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("like-count").textContent = data.likes;
+          document.getElementById("comment-count").textContent = data.comment_count;
+
+          const icon = document.getElementById("like-icon");
+          if (data.has_liked) {
+            icon.classList.remove("bi-hand-thumbs-up");
+            icon.classList.add("bi-hand-thumbs-up-fill");
+          } else {
+            icon.classList.remove("bi-hand-thumbs-up-fill");
+            icon.classList.add("bi-hand-thumbs-up");
+          }
+
+          const list = document.getElementById("comments-list");
+          list.innerHTML = "";
+          data.comments.forEach(c => {
+            const div = document.createElement("div");
+            div.className = "border-bottom py-2";
+            let nameToShow = c.name && c.name.trim() !== "" ? c.name : "کاربر ناشناس";
+            div.innerHTML = `<strong>${nameToShow}:</strong> ${c.text}`;
+            list.appendChild(div);
+          });
+        })
+        .catch(err => console.error('Error loading interactions:', err));
+    }
+
+    const likeCount = document.getElementById("like-count");
+    const likeSection = document.getElementById("like-section");
+    const likesList = document.getElementById("likes-list");
+
+    if (likeCount) {
+      likeCount.addEventListener("click", () => {
+        likeSection.classList.toggle("active");
+
+        if (likeSection.classList.contains("active") && itemId) {
+          fetch(`/likes/${cat}/${itemId}`)
+            .then(res => res.json())
+            .then(data => {
+              likesList.innerHTML = "";
+              if (data.length === 0) {
+                likesList.innerHTML = "<li class='text-muted'>هنوز کسی لایک نکرده</li>";
+              } else {
+                data.forEach(user => {
+                  const li = document.createElement("li");
+                  li.className = "d-flex align-items-center mb-2 justify-content-between";
+                  const iconColor = (user.username === username) ? "text-primary" : "text-dark";
+                  li.innerHTML = `
+                    <span>${user.first_name} ${user.last_name}</span>
+                    <i class="bi bi-hand-thumbs-up-fill ${iconColor} me-2"></i>
+                  `;
+                  likesList.appendChild(li);
+                });
+              }
+            })
+            .catch(err => console.error('Error loading likes:', err));
+        }
+      });
+    }
+
+    const likeBtn = document.getElementById("like-btn");
+    if (likeBtn) {
+      likeBtn.addEventListener("click", async function () {
+        if (!itemId) return;
+
+        const response = await fetch(`/like/${cat}/${itemId}`, { method: "POST" });
+        const data = await response.json();
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        document.getElementById("like-count").innerText = data.likes;
+        const icon = document.getElementById("like-icon");
+        if (data.has_liked) {
+          icon.classList.remove("bi-hand-thumbs-up");
+          icon.classList.add("bi-hand-thumbs-up-fill");
+        } else {
+          icon.classList.remove("bi-hand-thumbs-up-fill");
+          icon.classList.add("bi-hand-thumbs-up");
+        }
+      });
+    }
+
+    const commentBtn = document.getElementById("comment-btn");
+    if (commentBtn) {
+      commentBtn.addEventListener("click", function () {
+        const section = document.getElementById("comment-section");
+        if (section.style.display === "none") {
+          section.style.display = "block";
+          section.style.maxHeight = section.scrollHeight + "px";
+        } else {
+          section.style.maxHeight = "0";
+          setTimeout(() => {
+            section.style.display = "none";
+          }, 400);
+        }
+      });
+    }
+
+    const commentForm = document.getElementById("comment-form");
+    if (commentForm) {
+      commentForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        if (!itemId) return;
+
+        const text = document.getElementById("comment-input").value.trim();
+        if (!text) return;
+
+        const response = await fetch(`/comment/${cat}/${itemId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comment: text })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        document.getElementById("comment-count").innerText = data.comment_count;
+
+        const list = document.getElementById("comments-list");
+        list.innerHTML = "";
+        data.comments.forEach(c => {
+          const div = document.createElement("div");
+          div.className = "border-bottom py-2";
+          let nameToShow = c.name && c.name.trim() !== "" ? c.name : "کاربر ناشناس";
+          div.innerHTML = `<strong>${nameToShow}:</strong> ${c.text}`;
+          list.appendChild(div);
+        });
+
+        document.getElementById("comment-input").value = "";
+      });
+    }
+
+    const shareBtn = document.getElementById("share-btn");
+    if (shareBtn) {
+      shareBtn.addEventListener("click", function () {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          alert("لینک کپی شد: " + url);
+        }).catch(() => {
+          alert("کپی لینک انجام نشد!");
+        });
+      });
+    }
+
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      element.select();
+      element.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("لینک کپی شد!");
+    }
+
+    function shareToWhatsApp() {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent("محتوای جالبی دیدم: " + document.title);
+      window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+    }
+
+    function shareToTelegram() {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent("محتوای جالبی دیدم: " + document.title);
+      window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const contentElements = document.querySelectorAll('[data-wordcount]');
+      contentElements.forEach(el => {
+        const text = el.textContent;
+        const count = wordCount(text);
+        el.setAttribute('title', `تعداد کلمات: ${count}`);
+      });
+    });
+
+  </script>
+  <script>
+const evaluateBtn = document.getElementById("evaluate-btn");
+if (evaluateBtn) {
+  evaluateBtn.addEventListener("click", function() {
+    const evaluateModal = new bootstrap.Modal(document.getElementById('evaluateModal'));
+    evaluateModal.show();
+
+    setTimeout(() => {
+      document.querySelectorAll('.card-criteria').forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('animate__animated', 'animate__fadeInUp');
+      });
+    }, 300);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.card-criteria').forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+
+    setTimeout(() => {
+      card.style.transition = 'all 0.5s ease';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, index * 100);
+  });
+
+  document.querySelectorAll('.star-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const parentCard = this.closest('.card-criteria');
+      const hiddenInput = parentCard.querySelector('input[type="hidden"]');
+      const value = parseInt(this.getAttribute('data-value'));
+      const allStars = parentCard.querySelectorAll('.star-btn');
+
+      this.style.transform = 'scale(0.8)';
+      setTimeout(() => {
+        this.style.transform = 'scale(1)';
+      }, 150);
+
+      allStars.forEach(star => {
+        star.classList.remove('active');
+        star.querySelector('i').classList.remove('bi-star-fill');
+        star.querySelector('i').classList.add('bi-star');
+      });
+
+      for (let i = 0; i < value; i++) {
+        const star = allStars[i];
+        star.classList.add('active');
+        star.querySelector('i').classList.remove('bi-star');
+        star.querySelector('i').classList.add('bi-star-fill');
+
+        star.querySelector('i').style.transform = 'scale(1.3)';
+        setTimeout(() => {
+          star.querySelector('i').style.transform = 'scale(1)';
+        }, 150);
+      }
+
+      hiddenInput.value = value;
+
+      updateProgressBar();
+    });
+
+    button.addEventListener('mouseenter', function() {
+      const value = parseInt(this.getAttribute('data-value'));
+      const allStars = this.parentElement.querySelectorAll('.star-btn');
+
+      allStars.forEach((star, index) => {
+        if (index < value) {
+          star.querySelector('i').style.color = '#ffd700';
+        }
+      });
+    });
+
+    button.addEventListener('mouseleave', function() {
+      const allStars = this.parentElement.querySelectorAll('.star-btn');
+
+      allStars.forEach(star => {
+        if (!star.classList.contains('active')) {
+          star.querySelector('i').style.color = '#e0e0e0';
+        }
+      });
+    });
+  });
+
+  const commentTextarea = document.getElementById('additional_comment');
+  const charCount = document.getElementById('char-count');
+
+  if (commentTextarea && charCount) {
+    commentTextarea.addEventListener('input', function() {
+      const length = this.value.length;
+      charCount.textContent = length;
+
+      if (length > 500) {
+        this.value = this.value.substring(0, 500);
+        charCount.textContent = 500;
+        charCount.style.color = '#f44336';
+
+        this.style.borderColor = '#f44336';
+        setTimeout(() => {
+          this.style.borderColor = '';
+        }, 1000);
+      } else if (length > 450) {
+        charCount.style.color = '#ff9800';
+      } else {
+        charCount.style.color = '#667eea';
+      }
+    });
+  }
+
+  const evaluationForm = document.getElementById('evaluation-form');
+  if (evaluationForm) {
+    evaluationForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      if (!itemId) {
+        showNotification("خطا: آیتم شناسایی نشد!", "error");
+        return;
+      }
+
+      const formData = new FormData(evaluationForm);
+      const evaluationData = {};
+      let allFilled = true;
+
+      formData.forEach((value, key) => {
+        evaluationData[key] = value;
+        if (value === '' && key !== 'additional_comment') {
+          allFilled = false;
+          const input = document.getElementById(key);
+          if (input) {
+            input.closest('.card-criteria').style.animation = 'shake 0.5s';
+            setTimeout(() => {
+              input.closest('.card-criteria').style.animation = '';
+            }, 500);
+          }
+        }
+      });
+
+      if (!allFilled) {
+        showNotification("لطفاً به همه معیارها امتیاز دهید!", "warning");
+        return;
+      }
+
+      const submitBtn = document.querySelector('.btn-submit-evaluation');
+      submitBtn.classList.add('loading');
+
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        const response = await fetch(`/evaluate/${cat}/${itemId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(evaluationData)
+        });
+
+        const data = await response.json();
+
+        submitBtn.classList.remove('loading');
+
+        if (data.success) {
+          submitBtn.classList.add('success-animation');
+          submitBtn.innerHTML = '<i class="bi bi-check-circle-fill"></i> ارزیابی ثبت شد!';
+          submitBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)';
+
+          setTimeout(() => {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('evaluateModal'));
+            modal.hide();
+
+            setTimeout(() => {
+              resetForm();
+              submitBtn.classList.remove('success-animation');
+              submitBtn.innerHTML = `
+                <span class="submit-text">
+                  <i class="bi bi-send-fill"></i>
+                  ثبت ارزیابی
+                </span>
+                <span class="submit-loader">
+                  <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  در حال ارسال...
+                </span>`;
+              submitBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }, 500);
+          }, 1500);
+
+          showNotification(" ارزیابی شما با موفقیت ثبت شد!", "success");
+        } else {
+          showNotification("خطا در ثبت ارزیابی: " + (data.error || "خطای ناشناخته"), "error");
+        }
+      } catch (err) {
+        console.error('Error submitting evaluation:', err);
+        submitBtn.classList.remove('loading');
+        showNotification("خطا در ارسال ارزیابی!", "error");
+      }
+    });
+  }
+
+  function updateProgressBar() {
+    const criteriaCards = document.querySelectorAll('.card-criteria');
+    let filledCount = 0;
+
+    criteriaCards.forEach(card => {
+      const input = card.querySelector('input[type="hidden"]');
+      if (input && input.value) {
+        filledCount++;
+      }
+    });
+
+    const progressPercent = Math.round((filledCount / criteriaCards.length) * 100);
+    const progressBar = document.getElementById('evaluation-progress');
+    const progressText = document.getElementById('progress-percent');
+
+    if (progressBar && progressText) {
+      progressBar.style.width = `${progressPercent}%`;
+      progressText.textContent = `${progressPercent}%`;
+
+      if (progressPercent < 30) {
+        progressBar.style.background = 'linear-gradient(90deg, #f44336 0%, #ff5252 100%)';
+      } else if (progressPercent < 70) {
+        progressBar.style.background = 'linear-gradient(90deg, #ff9800 0%, #ffb74d 100%)';
+      } else {
+        progressBar.style.background = 'linear-gradient(90deg, #4CAF50 0%, #66BB6A 100%)';
+      }
+    }
+  }
+
+  function showNotification(message, type) {
+    const oldNotification = document.querySelector('.custom-notification');
+    if (oldNotification) oldNotification.remove();
+
+    const notification = document.createElement('div');
+    notification.className = `custom-notification ${type}`;
+    notification.innerHTML = `
+      <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : type === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-x-circle-fill'}"></i>
+      <span>${message}</span>
+    `;
+
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.classList.add('show');
+    }, 10);
+
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => {
+        notification.remove();
+      }, 300);
+    }, 3000);
+  }
+
+  function resetForm() {
+    document.querySelectorAll('.card-criteria').forEach(card => {
+      const input = card.querySelector('input[type="hidden"]');
+      if (input) input.value = '';
+
+      card.querySelectorAll('.star-btn').forEach(star => {
+        star.classList.remove('active');
+        star.querySelector('i').classList.remove('bi-star-fill');
+        star.querySelector('i').classList.add('bi-star');
+        star.querySelector('i').style.color = '#e0e0e0';
+      });
+    });
+
+    if (commentTextarea) commentTextarea.value = '';
+    if (charCount) charCount.textContent = '0';
+
+    updateProgressBar();
+  }
+});
+
+const notificationStyle = document.createElement('style');
+notificationStyle.textContent = `
+  .custom-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .custom-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .custom-notification.success {
+    border-right: 4px solid #4CAF50;
+  }
+
+  .custom-notification.warning {
+    border-right: 4px solid #FF9800;
+  }
+
+  .custom-notification.error {
+    border-right: 4px solid #F44336;
+  }
+
+  .custom-notification i {
+    font-size: 1.2rem;
+  }
+
+  .custom-notification.success i {
+    color: #4CAF50;
+  }
+
+  .custom-notification.warning i {
+    color: #FF9800;
+  }
+
+  .custom-notification.error i {
+    color: #F44336;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+  }
+`;
+
+document.head.appendChild(notificationStyle);
+</script>
+</body>
+</html>

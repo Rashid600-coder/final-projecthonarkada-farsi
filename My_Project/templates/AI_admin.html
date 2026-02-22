@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل مدیریت AI - هنرکده فارسی</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/AI_admin.css') }}">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c2d2d;">
+    <div class="container">
+      <label class="navbar-brand nastaliq-brand">هنرکده فارسی</label>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a href="javascript:history.back()" class="btn-back">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+    </div>
+  </nav>
+
+  <div class="container">
+      <div class="main-card fade-in">
+        <div class="card-header">
+          <h1 class="card-title">تولید محتوا توسط AI</h1>
+          <p class="card-subtitle">خلق محتوای ادبی فارسی با هوش مصنوعی</p>
+        </div>
+
+        <div class="form-container">
+          <form method="POST" action="/save_ai" id="ai_form">
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-cpu"></i>
+                انتخاب مدل هوش مصنوعی
+              </label>
+              <div class="ai-model-selector">
+                <div class="model-grid">
+                  <label class="model-option">
+                    <input type="radio" name="ai_model" value="chatgpt" checked>
+                    <div class="model-card">
+                      <div class="model-icon chatgpt">
+                        <i class="bi bi-lightning-charge"></i>
+                      </div>
+                      <span>ChatGPT</span>
+                    </div>
+                  </label>
+                  <label class="model-option">
+                    <input type="radio" name="ai_model" value="claude">
+                    <div class="model-card">
+                      <div class="model-icon claude">
+                        <i class="bi bi-cloud"></i>
+                      </div>
+                      <span>Claude</span>
+                    </div>
+                  </label>
+                  <label class="model-option">
+                    <input type="radio" name="ai_model" value="gemini">
+                    <div class="model-card">
+                      <div class="model-icon gemini">
+                        <i class="bi bi-gem"></i>
+                      </div>
+                      <span>Gemini</span>
+                    </div>
+                  </label>
+                  <label class="model-option">
+                    <input type="radio" name="ai_model" value="deepseek">
+                    <div class="model-card">
+                      <div class="model-icon deepseek">
+                        <i class="bi bi-search"></i>
+                      </div>
+                      <span>DeepSeek</span>
+                    </div>
+                  </label>
+                  <label class="model-option">
+                    <input type="radio" name="ai_model" value="perplexity">
+                    <div class="model-card">
+                      <div class="model-icon perplexity">
+                        <i class="bi bi-question-diamond"></i>
+                      </div>
+                      <span>Perplexity</span>
+                    </div>
+                  </label>
+                  <label class="model-option">
+                    <input type="radio" name="ai_model" value="custom">
+                    <div class="model-card">
+                      <div class="model-icon custom">
+                        <i class="bi bi-gear"></i>
+                      </div>
+                      <span>سفارشی</span>
+                    </div>
+                  </label>
+                </div>
+
+                <div id="custom_model_settings" style="display: none; margin-top: 15px;">
+                  <label class="form-label">
+                    <i class="bi bi-pencil"></i>
+                    تنظیمات مدل سفارشی
+                  </label>
+                  <input type="text" class="form-control" name="custom_model_name"
+                         placeholder="نام مدل (اختیاری)">
+                  <textarea class="form-control mt-2" rows="2" name="custom_model_instructions"
+                            placeholder="دستورات ویژه مدل..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-type"></i>
+                عنوان محتوا
+              </label>
+              <input type="text" class="form-control" name="title" placeholder="عنوان محتوا را وارد کنید" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-grid"></i>
+                دسته‌بندی
+              </label>
+              <select class="form-select" name="category" required>
+                <option value="" disabled selected>دسته‌بندی محتوا را انتخاب کنید</option>
+                <option value="poems" style="color : black">شعر</option>
+                <option value="stories" style="color : black">داستان کوتاه</option>
+                <option value="literature" style="color : black">متن ادبی</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-clipboard-check"></i>
+                سیستم ارزیابی خودکار
+              </label>
+              <div class="bio-box">
+                <div class="bio-text">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>فعال‌سازی بازبینی و بهبود خودکار</span>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="enable_evaluation" checked>
+                    </div>
+                  </div>
+                  <div class="evaluation-details mt-2" style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">
+                    <i class="bi bi-info-circle"></i>
+                    متن تولیدشده توسط یک مدل AI دیگر ارزیابی و در صورت نیاز دوباره تولید می‌شود
+                  </div>
+                </div>
+              </div>
+
+              <div id="evaluation_settings" style="display: block; margin-top: 15px;">
+                <label class="form-label">
+                  <i class="bi bi-graph-up"></i>
+                  مدل ارزیاب
+                </label>
+                <select class="form-select" name="evaluation_model">
+                  <option value="auto" style="color : black">خودکار (مخالف مدل اصلی)</option>
+                  <option value="claude" style="color : black">Claude (ارزیاب پیشنهادی)</option>
+                  <option value="gpt4" style="color : black">GPT-4 Turbo</option>
+                  <option value="gemini" style="color : black">Gemini Pro</option>
+                </select>
+
+                <div class="mt-3">
+                  <label class="form-label">
+                    <i class="bi bi-bar-chart"></i>
+                    استاندارد ارزیابی
+                  </label>
+                  <div class="evaluation-criteria">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="eval_relevance" id="eval_relevance" checked>
+                      <label class="form-check-label" for="eval_relevance">انطباق با موضوع</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="eval_coherence" id="eval_coherence" checked>
+                      <label class="form-check-label" for="eval_coherence">انسجام متن</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="eval_creativity" id="eval_creativity">
+                      <label class="form-check-label" for="eval_creativity">خلاقیت</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="eval_grammar" id="eval_grammar" checked>
+                      <label class="form-check-label" for="eval_grammar">دستور زبان</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="eval_engagement" id="eval_engagement">
+                      <label class="form-check-label" for="eval_engagement">جذابیت</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="eval_completeness" id="eval_completeness" checked>
+                      <label class="form-check-label" for="eval_completeness">کامل بودن</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <label class="form-label">
+                    <i class="bi bi-activity"></i>
+                    حداقل کیفیت قابل قبول
+                  </label>
+                  <div class="slider-container" dir="ltr">
+                    <input type="range" id="quality_threshold" name="quality_threshold"
+                           min="1" max="10" value="7" class="form-range custom-range">
+                    <div class="range-labels">
+                      <span>ضعیف</span>
+                      <span>متوسط</span>
+                      <span>عالی</span>
+                    </div>
+                    <div class="text-center mt-1" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                      نمره حداقل: <span id="threshold_value">7</span>/10
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <label class="form-label">
+                    <i class="bi bi-arrow-repeat"></i>
+                    حداکثر تلاش برای تولید مجدد
+                  </label>
+                  <div class="d-flex align-items-center">
+                    <input type="number" class="form-control" style="width: 100px;"
+                           name="max_retry_attempts" value="3" min="1" max="10">
+                    <span class="ms-2" style="color: rgba(255,255,255,0.7);">بار</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-person"></i>
+                استفاده از بیوگرافی در متن
+              </label>
+
+              {% if session.username and user_profile and user_profile.get('bio') %}
+                <input type="hidden" id="user_bio_hidden" value="{{ user_profile.get('bio') }}">
+
+                <div class="bio-box">
+                  <div class="bio-text">
+                    {{ user_profile.get('bio') }}
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="use_bio" checked>
+                  </div>
+                </div>
+              {% else %}
+                <div class="bio-box empty">
+                  <div class="bio-text">بیوگرافی موجود نیست</div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="use_bio" disabled>
+                  </div>
+                </div>
+
+                <input type="hidden" id="user_bio_hidden" value="">
+              {% endif %}
+            </div>
+
+
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-image"></i>
+                تولید تصویر همراه با متن
+              </label>
+              <div class="bio-box">
+                <div class="bio-text">فعال‌سازی تولید تصویر AI</div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="generate_image">
+                </div>
+              </div>
+
+              <div id="image_settings" style="display:none;">
+                <label class="form-label mt-3">
+                  <i class="bi bi-aspect-ratio"></i>
+                  اندازه تصویر
+                </label>
+                <select id="img_size" class="form-select">
+                  <option value="1024x1024" style="color : black">مربعی (1024×1024)</option>
+                  <option value="1024x1536" style="color : black">عمودی (1024×1536)</option>
+                  <option value="1536x1024" style="color : black">افقی (1536×1024)</option>
+                  <option value="auto" style="color : black">خودکار</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-lightbulb"></i>
+                درجه خلاقیت AI
+              </label>
+              <div class="slider-container" dir="ltr">
+                <input type="range" id="creativity" name="creativity" min="0" max="100" value="50" class="form-range custom-range">
+                <div class="range-labels">
+                  <span>کم</span>
+                  <span>متوسط</span>
+                  <span>زیاد</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="advanced-options">
+              <div class="options-header" id="optionsToggle">
+                <div class="options-title">
+                  <i class="bi bi-gear"></i>
+                  گزینه‌های پیشرفته
+                </div>
+                <i class="bi bi-chevron-down" id="optionsIcon"></i>
+              </div>
+
+              <div class="options-content" id="optionsContent" style="display: none;">
+                <div class="mb-3">
+                  <label class="form-label">
+                    <i class="bi bi-rulers"></i>
+                    حداکثر طول پاسخ
+                  </label>
+                  <input type="number" class="form-control" name="max_tokens" value="300" min="50" max="2000" step="50">
+                  <div class="text-muted mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">
+                  </div>
+                </div>
+
+                <div class="publish-switch">
+                  <span class="switch-label">وضعیت انتشار:</span>
+                  <div class="d-flex align-items-center gap-3">
+                    <label class="status-switch">
+                      <input type="checkbox" id="publishStatusCheckbox" checked>
+                      <span class="status-slider">
+                        <i class="bi bi-lock status-icon lock-icon"></i>
+                        <i class="bi bi-globe status-icon globe-icon"></i>
+                      </span>
+                    </label>
+
+                    <input type="hidden" name="publish_status" id="publishStatusHidden" value="public">
+                    <div id="statusBadge" class="status-badge status-public">
+                      <i class="bi bi-globe"></i> عمومی
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">
+                    <i class="bi bi-tags"></i>
+                    برچسب‌ها
+                  </label>
+                  <input type="text" class="form-control" id="tagInput" placeholder="تگ اضافه کنید و Enter بزنید...">
+                  <div class="tags-container" id="tagsContainer">
+
+                  </div>
+                  <input type="hidden" name="tags" id="tagsInput">
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">
+                    <i class="bi bi-bar-chart"></i>
+                    سطح خوانایی
+                  </label>
+                  <select class="form-select" name="readability">
+                    <option value="easy" selected style="color : black">آسان (عمومی)</option>
+                    <option value="medium" style="color : black">متوسط (ادبی)</option>
+                    <option value="hard" style="color : black">پیشرفته (تخصصی)</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">
+                    <i class="bi bi-calendar"></i>
+                    تاریخ انتشار
+                  </label>
+                  <input type="date" class="form-control" name="publish_date">
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-chat-left-text"></i>
+                پرامپت (درخواست)
+              </label>
+              <input type="text" id="prompt" class="form-control"
+                     placeholder="موضوع یا درخواست خود را وارد کنید (برای ارسال Enter بزنید)">
+              <div class="text-muted mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">
+              </div>
+            </div>
+            <div id="evaluation_status" class="mt-2 alert p-2" style="display:none;">
+              <div id="evaluation_text"></div>
+              <div id="evaluation_details" style="font-size:0.9rem; opacity:0.9; margin-top:6px;"></div>
+            </div>
+
+            <div class="mt-2" id="regenerate_wrap" style="display:none;">
+              <button type="button" id="regenerate_btn" class="btn btn-warning">
+                <i class="bi bi-arrow-repeat"></i> تولید مجدد
+              </button>
+              <span id="regenerate_info" class="ms-2" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;"></span>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-robot"></i>
+                پاسخ AI
+              </label>
+              <textarea class="form-control" rows="6" name="content" id="ai_response"
+                        placeholder="پاسخ AI در اینجا نمایش داده می‌شود" required></textarea>
+              <div id="evaluation_status" class="mt-2" style="display: none;">
+                <div class="alert alert-info p-2" style="background: rgba(13, 110, 253, 0.1); border: 1px solid rgba(13, 110, 253, 0.3);">
+                  <i class="bi bi-clipboard-check"></i>
+                  <span id="evaluation_text">در حال ارزیابی کیفیت محتوا...</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="image-preview" id="image_preview" style="display: none;">
+              <img id="ai_image" src="" alt="تصویر تولید شده">
+            </div>
+
+            <button type="submit" class="btn-save pulse">
+              <i class="bi bi-save"></i>
+            </button>
+
+            <div class="text-center mt-3" style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+              <i class="bi bi-info-circle"></i>
+              محتوای تولیدشده پس از تأیید در سایت منتشر خواهد شد
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+<script type="text/javascript">
+    document.querySelectorAll('input[name="ai_model"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      const customSettings = document.getElementById('custom_model_settings');
+      if (this.value === 'custom') {
+        customSettings.style.display = 'block';
+      } else {
+        customSettings.style.display = 'none';
+      }
+    });
+    });
+
+    const evaluationSwitch = document.getElementById('enable_evaluation');
+    const evaluationSettings = document.getElementById('evaluation_settings');
+
+    evaluationSwitch.addEventListener('change', function() {
+    if (this.checked) {
+      evaluationSettings.style.display = 'block';
+    } else {
+      evaluationSettings.style.display = 'none';
+    }
+    });
+
+    const thresholdSlider = document.getElementById('quality_threshold');
+    const thresholdValue = document.getElementById('threshold_value');
+
+    thresholdSlider.addEventListener('input', function() {
+    thresholdValue.textContent = this.value;
+    });
+
+    async function evaluateContent(content, evaluationModel, criteria) {
+    const evaluationStatus = document.getElementById('evaluation_status');
+    const evaluationText = document.getElementById('evaluation_text');
+
+    evaluationStatus.style.display = 'block';
+    evaluationText.textContent = 'در حال ارزیابی کیفیت محتوا...';
+
+    try {
+      const evaluationResult = await sendToEvaluationAPI(content, evaluationModel, criteria);
+
+      if (evaluationResult.score >= document.getElementById('quality_threshold').value) {
+        evaluationText.textContent = `✅ محتوا با کیفیت عالی (نمره: ${evaluationResult.score}/10)`;
+        evaluationStatus.className = 'mt-2 alert alert-success p-2';
+        return true;
+      } else {
+        evaluationText.textContent = `⚠️ نیاز به بهبود (نمره: ${evaluationResult.score}/10) - در حال تولید مجدد...`;
+        evaluationStatus.className = 'mt-2 alert alert-warning p-2';
+        return false;
+      }
+    } catch (error) {
+      evaluationText.textContent = ' خطا در ارزیابی';
+      evaluationStatus.className = 'mt-2 alert alert-danger p-2';
+      return true;
+    }
+    }
+</script>
+
+  <footer class="text-center" style="background-color: #0a0a0a; color: #fff">
+    <p>© 2025 هنرکده فارسی | تمام حقوق محفوظ است</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+      const creativitySlider = document.getElementById('creativity');
+
+      function updateSliderFill(el) {
+        const val = Number(el.value);
+        el.style.background = `linear-gradient(to right, #ffcc00 0%, #ffcc00 ${val}%, #ffffff ${val}%, #ffffff 100%)`;
+      }
+
+      const optionsToggle = document.getElementById('optionsToggle');
+      const optionsContent = document.getElementById('optionsContent');
+      const optionsIcon = document.getElementById('optionsIcon');
+
+      if (optionsToggle) {
+        optionsToggle.addEventListener('click', function() {
+          if (optionsContent.style.display === 'none' || optionsContent.style.display === '') {
+            optionsContent.style.display = 'block';
+            optionsIcon.classList.remove('bi-chevron-down');
+            optionsIcon.classList.add('bi-chevron-up');
+          } else {
+            optionsContent.style.display = 'none';
+            optionsIcon.classList.remove('bi-chevron-up');
+            optionsIcon.classList.add('bi-chevron-down');
+          }
+        });
+      }
+
+      const generateImageToggle = document.getElementById('generate_image');
+      const imageSettings = document.getElementById('image_settings');
+
+      if (generateImageToggle) {
+        generateImageToggle.addEventListener('change', function() {
+          if (this.checked) {
+            imageSettings.style.display = 'block';
+          } else {
+            imageSettings.style.display = 'none';
+            document.getElementById('image_preview').style.display = 'none';
+          }
+        });
+      }
+
+      const publishCheckbox = document.getElementById('publishStatusCheckbox');
+      const publishHidden = document.getElementById('publishStatusHidden');
+      const statusBadge = document.getElementById('statusBadge');
+
+      function initPublishSwitch() {
+        if (publishCheckbox && publishHidden && statusBadge) {
+          if (publishCheckbox.checked) {
+            publishHidden.value = 'public';
+            statusBadge.className = 'status-badge status-public';
+            statusBadge.innerHTML = '<i class="bi bi-globe"></i> عمومی';
+          } else {
+            publishHidden.value = 'private';
+            statusBadge.className = 'status-badge status-private';
+            statusBadge.innerHTML = '<i class="bi bi-lock"></i> خصوصی';
+          }
+        }
+      }
+
+      if (publishCheckbox) {
+        publishCheckbox.addEventListener('change', function() {
+          if (this.checked) {
+            publishHidden.value = 'public';
+            statusBadge.className = 'status-badge status-public';
+            statusBadge.innerHTML = '<i class="bi bi-globe"></i> عمومی';
+          } else {
+            publishHidden.value = 'private';
+            statusBadge.className = 'status-badge status-private';
+            statusBadge.innerHTML = '<i class="bi bi-lock"></i> خصوصی';
+          }
+          console.log('Publish status changed to:', publishHidden.value);
+        });
+      }
+
+      const tagInput = document.getElementById('tagInput');
+      const tagsContainer = document.getElementById('tagsContainer');
+      const tagsInput = document.getElementById('tagsInput');
+      let tags = [];
+
+      const commonTags = ['عشق', 'طبیعت', 'فلسفه', 'اجتماعی', 'تاریخی', 'معاصر', 'کلاسیک', 'ادبیات', 'شعر', 'داستان'];
+
+      function showSuggestedTags() {
+        if (tagsContainer && commonTags) {
+          tagsContainer.innerHTML = '';
+          commonTags.forEach(tag => {
+            const tagElement = document.createElement('div');
+            tagElement.className = 'tag';
+            tagElement.textContent = tag;
+            tagElement.onclick = function() {
+              if (!tags.includes(tag) && tags.length < 5) {
+                tags.push(tag);
+                updateTagsDisplay();
+              }
+            };
+            tagsContainer.appendChild(tagElement);
+          });
+        }
+      }
+
+      function updateTagsDisplay() {
+        if (!tagsContainer || !tagsInput) return;
+
+        tagsContainer.innerHTML = '';
+
+        tags.forEach((tag, index) => {
+          const tagElement = document.createElement('div');
+          tagElement.className = 'tag active';
+          tagElement.innerHTML = `
+            ${tag}
+            <i class="bi bi-x" onclick="removeTag(${index})"></i>
+          `;
+          tagsContainer.appendChild(tagElement);
+        });
+
+        tagsInput.value = tags.join(',');
+      }
+
+      window.removeTag = function(index) {
+        tags.splice(index, 1);
+        updateTagsDisplay();
+        showSuggestedTags();
+      };
+
+      if (tagInput) {
+        tagInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const tagText = this.value.trim();
+
+            if (tagText && !tags.includes(tagText) && tags.length < 5) {
+              tags.push(tagText);
+              updateTagsDisplay();
+              showSuggestedTags();
+              this.value = '';
+            }
+          }
+        });
+      }
+
+      function renderScores(scoreDetails) {
+        if (!scoreDetails || typeof scoreDetails !== "object") return "";
+
+        const labels = {
+          "relevance": "انطباق با موضوع",
+          "coherence": "انسجام متن",
+          "creativity": "خلاقیت",
+          "grammar": "دستور زبان",
+          "engagement": "جذابیت",
+          "overall": "نمره کلی"
+        };
+
+        return Object.entries(scoreDetails).map(([k, v]) => {
+          const label = labels[k] || k;
+          const isOverall = k === "overall" || k === "score_overall";
+          return `<div style="display:flex;justify-content:space-between;gap:12px;margin:4px 0;">
+                    <span style="font-size:0.9rem;">${label}:</span>
+                    <b style="font-size:0.9rem;${isOverall ? 'color:#ffcc00;font-size:1.1rem;' : ''}">
+                      ${v}/10
+                    </b>
+                  </div>`;
+        }).join("");
+      }
+
+      const promptInput = document.getElementById('prompt');
+      const aiResponse = document.getElementById('ai_response');
+
+      if (promptInput && aiResponse) {
+        promptInput.addEventListener('keydown', async function(event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+
+            let promptText = this.value.trim();
+            if (!promptText) {
+              alert("لطفاً متن درخواست خود را وارد کنید");
+              return;
+            }
+
+            const useBio = document.getElementById("use_bio")?.checked || false;
+            const bioText = document.getElementById("user_bio_hidden")?.value || "";
+
+            const creativity = parseInt(creativitySlider.value) || 50;
+            const maxTokens = parseInt(document.querySelector("input[name='max_tokens']")?.value) || 300;
+            const generateImage = generateImageToggle?.checked || false;
+            const imgSize = document.getElementById("img_size")?.value || "1024x1024";
+
+            aiResponse.value = "در حال تولید محتوا";
+            aiResponse.disabled = true;
+            let dots = 0;
+            const loadingInterval = setInterval(() => {
+              dots = (dots + 1) % 4;
+              aiResponse.value = "در حال تولید محتوا" + ".".repeat(dots);
+            }, 500);
+
+            try {
+              const response = await fetch("/generate_ai", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  prompt: promptText,
+                  mode: "write",
+                  creativity: creativity,
+                  max_tokens: maxTokens,
+                  use_bio: useBio,
+                  bio_text: bioText,
+                  generate_image: generateImage,
+                  img_size: imgSize,
+
+
+                  enable_evaluation: document.getElementById("enable_evaluation")?.checked || false,
+                  evaluation_model: document.querySelector('select[name="evaluation_model"]')?.value || "auto",
+                  eval_relevance: document.getElementById("eval_relevance")?.checked ?? true,
+                  eval_coherence: document.getElementById("eval_coherence")?.checked ?? true,
+                  eval_creativity: document.getElementById("eval_creativity")?.checked || false,
+                  eval_grammar: document.getElementById("eval_grammar")?.checked ?? true,
+                  eval_engagement: document.getElementById("eval_engagement")?.checked || false,
+                  eval_completeness: document.getElementById("eval_completeness")?.checked ?? true,
+                  quality_threshold: Number(document.getElementById("quality_threshold")?.value || 7),
+                  max_retry_attempts: Number(document.querySelector('input[name="max_retry_attempts"]')?.value || 3)
+                })
+              });
+
+              const data = await response.json();
+              console.log("پاسخ کامل از بک‌اند:", data);
+
+              if (data.evaluation && data.evaluation.raw_response) {
+                console.log("پاسخ خام ارزیاب:", data.evaluation.raw_response);
+              }
+
+              const evaluationStatus = document.getElementById("evaluation_status");
+              const evaluationText = document.getElementById("evaluation_text");
+              const evaluationDetails = document.getElementById("evaluation_details");
+
+              const regenWrap = document.getElementById("regenerate_wrap");
+              const regenBtn = document.getElementById("regenerate_btn");
+              const regenInfo = document.getElementById("regenerate_info");
+
+              // نگه‌داری وضعیت آخر برای کلیک‌های بعدی
+              window.__aiGenState = window.__aiGenState || {};
+              window.__aiGenState.generation_id = data.generation_id || null;
+              window.__aiGenState.remaining = Number(data.remaining ?? 0);
+              window.__aiGenState.threshold = Number(data.quality_threshold ?? 7);
+              window.__aiGenState.last_score = Number(data.final_score ?? 0);
+              window.__aiGenState.evaluation_enabled = !!data.evaluation_enabled;
+
+              if (data.evaluation_enabled && data.evaluation) {
+                evaluationStatus.style.display = "block";
+
+                const score = Number(data.evaluation.score_overall ?? data.final_score ?? 0);
+                const th = Number(data.quality_threshold ?? 7);
+                const parseError = !!data.evaluation.parse_error;
+
+                if (parseError) {
+                  evaluationStatus.className = "mt-2 alert alert-danger p-2";
+                  evaluationText.innerHTML = `
+                      <div><i class="bi bi-exclamation-triangle"></i> خطا در ارزیابی</div>
+                      <div style="font-size:0.8rem;margin-top:4px;">${data.evaluation.error || "JSON معتبر نیست"}</div>
+                  `;
+                } else {
+                  evaluationStatus.className = (score >= th) ?
+                      "mt-2 alert alert-success p-2" :
+                      "mt-2 alert alert-warning p-2";
+
+                  evaluationText.innerHTML = `
+                      <div style="font-weight:bold;">
+                          <i class="bi bi-graph-up"></i>
+                          نمره کلی: <span style="font-size:1.2em;">${score.toFixed(1)}</span>/10
+                          ${score >= th ? '✅' : '⚠️'}
+                          <span style="font-size:0.9em;opacity:0.8;">(حداقل: ${th})</span>
+                      </div>
+                  `;
+                }
+
+                const issues = (data.evaluation?.issues || []);
+                const suggestions = (data.evaluation?.suggestions || []);
+                const scoreDetails = data.evaluation?.score_details || {};
+                const analysis = data.evaluation?.analysis_summary || "";
+                const hint = data.evaluation?.rewrite_hint || "";
+
+                let detailsHTML = "";
+
+                const allScores = { ...scoreDetails };
+                if (score && !scoreDetails.overall) {
+                  allScores.overall = score.toFixed(1);
+                }
+
+                if (analysis) {
+                  detailsHTML += `<div style="margin:8px 0;padding:8px;background:rgba(0,0,0,0.1);border-radius:4px;">
+                      <small><strong> تحلیل:</strong> ${analysis}</small>
+                  </div>`;
+                }
+
+                if (Object.keys(allScores).length > 0) {
+                  detailsHTML += `<div style="margin:8px 0;">
+                      <small><strong> جزئیات نمره:</strong></small>
+                      ${renderScores(allScores)}
+                  </div>`;
+                }
+
+                if (issues.length > 0) {
+                  detailsHTML += `<div style="margin:8px 0;">
+                      <small><strong> ایرادها:</strong></small>
+                      <ul style="margin:4px 0;padding-right:16px;font-size:0.85rem;">
+                          ${issues.map(i => `<li>${i}</li>`).join('')}
+                      </ul>
+                  </div>`;
+                }
+
+                if (suggestions.length > 0) {
+                  detailsHTML += `<div style="margin:8px 0;">
+                      <small><strong> پیشنهادها:</strong></small>
+                      <ul style="margin:4px 0;padding-right:16px;font-size:0.85rem;">
+                          ${suggestions.map(s => `<li>${s}</li>`).join('')}
+                      </ul>
+                  </div>`;
+                }
+
+                if (hint) {
+                  detailsHTML += `<div style="margin:8px 0;padding:8px;background:rgba(255,193,7,0.1);border-radius:4px;">
+                      <small><strong> راهنمای بازنویسی:</strong> ${hint}</small>
+                  </div>`;
+                }
+
+                evaluationDetails.innerHTML = detailsHTML;
+                regenWrap.style.display = "block";
+                regenBtn.disabled = false;
+
+                if (score >= th) {
+                  regenBtn.disabled = true;
+                  regenInfo.innerHTML = `<span style="color:#28a745;"><i class="bi bi-check-circle"></i> به حد کافی خوب است</span>`;
+                } else if (window.__aiGenState.remaining <= 0) {
+                  regenBtn.disabled = true;
+                  regenInfo.innerHTML = `<span style="color:#dc3545;"><i class="bi bi-x-circle"></i> تلاش‌ها تمام شد</span>`;
+                } else {
+                  regenBtn.disabled = false;
+                  regenInfo.innerHTML = `
+                      <span style="color:#ffc107;">
+                          <i class="bi bi-exclamation-triangle"></i>
+                          ${window.__aiGenState.remaining} تلاش باقی‌مانده
+                      </span>`;
+                }
+              } else {
+                evaluationStatus.style.display = "none";
+                regenWrap.style.display = "none";
+              }
+
+              clearInterval(loadingInterval);
+              aiResponse.disabled = false;
+
+              if (data.response) {
+                aiResponse.value = data.response;
+              } else {
+                aiResponse.value = "پاسخی دریافت نشد.";
+              }
+
+              if (data.image_url) {
+                const imagePreview = document.getElementById('image_preview');
+                const aiImage = document.getElementById('ai_image');
+
+                if (aiImage) {
+                  aiImage.src = data.image_url;
+                  aiImage.onload = function() {
+                    imagePreview.style.display = 'block';
+                  };
+                }
+              }
+
+            } catch (error) {
+              clearInterval(loadingInterval);
+              aiResponse.disabled = false;
+              aiResponse.value = "خطا در دریافت پاسخ از AI. لطفاً دوباره تلاش کنید.";
+              console.error("AI generation error:", error);
+            }
+          }
+        });
+      }
+
+      const form = document.getElementById('ai_form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          const saveButton = document.querySelector('.btn-save');
+          if (saveButton) {
+            const originalText = saveButton.innerHTML;
+
+            saveButton.innerHTML = '<i class="bi bi-hourglass-split"></i> در حال ذخیره...';
+            saveButton.disabled = true;
+            saveButton.classList.remove('pulse');
+
+            setTimeout(() => {
+              saveButton.innerHTML = '<i class="bi bi-check-circle"></i> با موفقیت ذخیره شد!';
+              saveButton.style.background = 'linear-gradient(135deg, #4CAF50, #8BC34A)';
+
+              setTimeout(() => {
+                saveButton.innerHTML = originalText;
+                saveButton.disabled = false;
+                saveButton.classList.add('pulse');
+                saveButton.style.background = 'linear-gradient(135deg, #ffcc00 0%, #ffdb4d 100%)';
+              }, 1500);
+            }, 1000);
+          }
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        if (creativitySlider) {
+          updateSliderFill(creativitySlider);
+          creativitySlider.addEventListener('input', () => updateSliderFill(creativitySlider));
+        }
+
+        initPublishSwitch();
+        showSuggestedTags();
+
+        const elements = document.querySelectorAll('.form-label, .form-control, .form-select, .bio-box');
+        elements.forEach((el, index) => {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(20px)';
+
+          setTimeout(() => {
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, 100 + index * 30);
+        });
+
+        const today = new Date().toISOString().split('T')[0];
+        const publishDateInput = document.querySelector('input[name="publish_date"]');
+        if (publishDateInput) {
+          publishDateInput.value = today;
+          publishDateInput.min = today;
+        }
+      });
+
+      document.addEventListener("click", async function(e) {
+          if (e.target && (e.target.id === "regenerate_btn" || e.target.closest("#regenerate_btn"))) {
+              const st = window.__aiGenState || {};
+              if (!st.generation_id) return;
+
+              const evaluationStatus = document.getElementById("evaluation_status");
+              const evaluationText = document.getElementById("evaluation_text");
+              const evaluationDetails = document.getElementById("evaluation_details");
+              const regenBtn = document.getElementById("regenerate_btn");
+              const regenInfo = document.getElementById("regenerate_info");
+              const aiResponse = document.getElementById("ai_response");
+
+              if (st.last_score >= st.threshold) {
+                  regenBtn.disabled = true;
+                  regenInfo.innerHTML = `<span style="color:#28a745;">به حد کافی خوب است (${st.last_score.toFixed(1)} ≥ ${st.threshold}).</span>`;
+                  return;
+              }
+              if (st.remaining <= 0) {
+                  regenBtn.disabled = true;
+                  regenInfo.innerHTML = `<span style="color:#dc3545;">تعداد تلاش برای تولید مجدد تمام شد.</span>`;
+                  return;
+              }
+
+              regenBtn.disabled = true;
+              regenInfo.innerHTML = `<span style="color:#ffc107;"><i class="bi bi-arrow-repeat"></i> در حال تولید مجدد...</span>`;
+
+              try {
+                  const resp = await fetch("/regenerate_ai", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ generation_id: st.generation_id })
+                  });
+
+                  const data = await resp.json();
+
+                  if (!data.ok) {
+                      regenBtn.disabled = true;
+                      regenInfo.innerHTML = `<span style="color:#dc3545;">${data.message || "امکان تولید مجدد نیست."}</span>`;
+                      return;
+                  }
+
+                  if (data.response) aiResponse.value = data.response;
+
+                  st.remaining = Number(data.remaining ?? st.remaining);
+                  st.threshold = Number(data.quality_threshold ?? st.threshold);
+                  st.last_score = Number(data.final_score ?? st.last_score);
+
+                  if (data.evaluation_enabled && data.evaluation) {
+                      evaluationStatus.style.display = "block";
+
+                      const score = Number(data.evaluation.score_overall ?? data.final_score ?? 0);
+                      const th = Number(data.quality_threshold ?? 7);
+                      const parseError = !!data.evaluation.parse_error;
+
+                      if (parseError) {
+                          evaluationStatus.className = "mt-2 alert alert-danger p-2";
+                          evaluationText.innerHTML = `
+                              <div><i class="bi bi-exclamation-triangle"></i> خطا در ارزیابی</div>
+                              <div style="font-size:0.8rem;margin-top:4px;">${data.evaluation.error || "JSON معتبر نیست"}</div>
+                          `;
+                      } else {
+                          evaluationStatus.className = (score >= th) ?
+                              "mt-2 alert alert-success p-2" :
+                              "mt-2 alert alert-warning p-2";
+
+                          evaluationText.innerHTML = `
+                              <div style="font-weight:bold;">
+                                  <i class="bi bi-graph-up"></i>
+                                  نمره کلی: <span style="font-size:1.2em;">${score.toFixed(1)}</span>/10
+                                  ${score >= th ? '✅' : '⚠️'}
+                                  <span style="font-size:0.9em;opacity:0.8;">(حداقل: ${th})</span>
+                              </div>
+                          `;
+                      }
+
+                      const issues = (data.evaluation?.issues || []);
+                      const suggestions = (data.evaluation?.suggestions || []);
+                      const scoreDetails = data.evaluation?.score_details || {};
+                      const analysis = data.evaluation?.analysis_summary || "";
+                      const hint = data.evaluation?.rewrite_hint || "";
+
+                      let detailsHTML = "";
+
+                      const allScores = { ...scoreDetails };
+                      if (score && !scoreDetails.overall) {
+                          allScores.overall = score.toFixed(1);
+                      }
+
+                      if (analysis) {
+                          detailsHTML += `<div style="margin:8px 0;padding:8px;background:rgba(0,0,0,0.1);border-radius:4px;">
+                              <small><strong> تحلیل:</strong> ${analysis}</small>
+                          </div>`;
+                      }
+
+                      if (Object.keys(allScores).length > 0) {
+                          detailsHTML += `<div style="margin:8px 0;">
+                              <small><strong> جزئیات نمره:</strong></small>
+                              ${renderScores(allScores)}
+                          </div>`;
+                      }
+
+                      if (issues.length > 0) {
+                          detailsHTML += `<div style="margin:8px 0;">
+                              <small><strong> ایرادها:</strong></small>
+                              <ul style="margin:4px 0;padding-right:16px;font-size:0.85rem;">
+                                  ${issues.map(i => `<li>${i}</li>`).join('')}
+                              </ul>
+                          </div>`;
+                      }
+
+                      if (suggestions.length > 0) {
+                          detailsHTML += `<div style="margin:8px 0;">
+                              <small><strong> پیشنهادها:</strong></small>
+                              <ul style="margin:4px 0;padding-right:16px;font-size:0.85rem;">
+                                  ${suggestions.map(s => `<li>${s}</li>`).join('')}
+                              </ul>
+                          </div>`;
+                      }
+
+                      if (hint) {
+                          detailsHTML += `<div style="margin:8px 0;padding:8px;background:rgba(255,193,7,0.1);border-radius:4px;">
+                              <small><strong> راهنمای بازنویسی:</strong> ${hint}</small>
+                          </div>`;
+                      }
+
+                      evaluationDetails.innerHTML = detailsHTML;
+                  }
+
+                  let score = st.last_score;
+                  let th = st.threshold;
+
+                  if (score >= th) {
+                      regenBtn.disabled = true;
+                      regenInfo.innerHTML = `<span style="color:#28a745;"><i class="bi bi-check-circle"></i> به حد کافی خوب است (${score.toFixed(1)} ≥ ${th})</span>`;
+                  } else if (st.remaining <= 0) {
+                      regenBtn.disabled = true;
+                      regenInfo.innerHTML = `<span style="color:#dc3545;"><i class="bi bi-x-circle"></i> تلاش‌ها تمام شد</span>`;
+                  } else {
+                      regenBtn.disabled = false;
+                      regenInfo.innerHTML = `
+                          <span style="color:#ffc107;">
+                              <i class="bi bi-exclamation-triangle"></i>
+                              ${st.remaining} تلاش باقی‌مانده
+                          </span>`;
+                  }
+              } catch (err) {
+                  console.error("خطا در تولید مجدد:", err);
+
+                  regenBtn.disabled = false;
+
+                  if (err.message && err.message.includes('Failed to fetch')) {
+                      regenInfo.innerHTML = `<span style="color:#dc3545;">خطا در اتصال به سرور. لطفاً دوباره تلاش کنید.</span>`;
+                  } else {
+                      regenInfo.innerHTML = `<span style="color:#dc3545;">خطا در تولید مجدد: ${err.message || 'خطای ناشناخته'}</span>`;
+                  }
+
+                  console.error("جزئیات خطا:", {
+                      error: err,
+                      generation_id: st.generation_id,
+                      state: st
+                  });
+              }
+          }
+      });
+  </script>
+</body>
+</html>

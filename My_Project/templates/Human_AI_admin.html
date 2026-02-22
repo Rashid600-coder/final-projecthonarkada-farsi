@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Human + AI Admin - هنرکده فارسی</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      background: linear-gradient(135deg, #d3d2d0 0%, #c5c4c2 50%, #d3d2d0 100%);
+      min-height: 100vh;
+      background-attachment: fixed;
+    }
+
+    .navbar {
+      background-color: #2c2d2d !important;
+    }
+
+    .btn-back {
+      font-size: 22px;
+      color: #fff;
+      margin-left: 8px;
+      text-decoration: none;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .btn-back::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 50%;
+      bottom: 0px;
+      background-color: #ffcc00;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+
+    .btn-back:hover {
+      color: #ffcc00;
+    }
+    .btn-back:hover::after{
+      width: 100%;
+    }
+
+    .main-card {
+      background: linear-gradient(145deg, #5a5a5a 0%, #555555 100%);
+      border-radius: 25px;
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      position: relative;
+      height: 100%;
+    }
+
+    .main-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #ffcc00 0%, #ffdb4d 100%);
+    }
+
+    .card-header {
+      background: rgba(44, 45, 45, 0.9);
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .card-title {
+      color: #ffcc00;
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      right: 50%;
+      transform: translateX(50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #ffcc00, transparent);
+      border-radius: 3px;
+    }
+
+    .card-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .form-container {
+      padding: 1.8rem;
+    }
+
+    .form-label {
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-label i {
+      color: #ffcc00;
+      font-size: 1.1rem;
+    }
+
+    .form-control, .form-select {
+      background: rgba(255, 255, 255, 0.12) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      color: #fff !important;
+      border-radius: 12px !important;
+      padding: 0.9rem 1.2rem !important;
+      font-size: 1rem !important;
+      transition: all 0.3s ease !important;
+      backdrop-filter: blur(8px);
+    }
+
+    .form-control::placeholder, .form-select::placeholder {
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background: rgba(255, 255, 255, 0.18) !important;
+      border-color: #ffcc00 !important;
+      box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2) !important;
+      outline: none !important;
+      transform: translateY(-2px);
+    }
+
+    textarea.form-control {
+      min-height: 180px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    .advanced-section {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .advanced-toggle {
+      color: #ffcc00;
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.3s ease;
+    }
+
+    .advanced-toggle:hover {
+      color: #ffdb4d;
+      transform: translateX(-5px);
+    }
+
+    .advanced-content {
+      margin-top: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .publish-switch {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .switch-label {
+      color: #fff;
+      font-weight: 500;
+      font-size: 1rem;
+      min-width: 100px;
+    }
+
+    .status-switch {
+      position: relative;
+      display: inline-block;
+      width: 70px;
+      height: 34px;
+    }
+
+    .status-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .status-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #f44336;
+      transition: .4s;
+      border-radius: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+
+    .status-slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    .status-switch input:checked + .status-slider {
+      background-color: #4CAF50;
+    }
+
+    .status-switch input:checked + .status-slider:before {
+      transform: translateX(36px);
+    }
+
+    .status-icon {
+      color: white;
+      font-size: 0.9rem;
+      z-index: 1;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .status-public {
+      background: rgba(76, 175, 80, 0.15);
+      color: #8BC34A;
+      border: 1px solid rgba(76, 175, 80, 0.25);
+    }
+
+    .status-private {
+      background: rgba(244, 67, 54, 0.15);
+      color: #f44336;
+      border: 1px solid rgba(244, 67, 54, 0.25);
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 0.8rem;
+    }
+
+    .tag {
+      background: rgba(255, 204, 0, 0.12);
+      color: #ffcc00;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 204, 0, 0.2);
+    }
+
+    .tag:hover {
+      background: rgba(255, 204, 0, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .tag.active {
+      background: #ffcc00;
+      color: #2c2d2d;
+      font-weight: 600;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #ffcc00 0%, #ffdb4d 100%);
+      color: #2c2d2d;
+      border: none;
+      border-radius: 15px;
+      padding: 1rem 2.5rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 6px 18px rgba(255, 204, 0, 0.25);
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 25px rgba(255, 204, 0, 0.4);
+      color: #2c2d2d;
+    }
+
+    .btn-save:active {
+      transform: translateY(-1px);
+    }
+
+    .btn-save i {
+      font-size: 1.3rem;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-save:hover i {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    #chat-box {
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 15px;
+      background: #fff;
+      border-radius: 5px;
+    }
+
+    .message { margin-bottom: 10px; }
+    .user { font-weight: bold; color: #0d6efd; }
+    .ai { font-weight: bold; color: #198754; }
+    .text-content {
+      display: inline-block;
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 10px;
+    }
+
+    .user .text-content { background-color: #cfe2ff; }
+    .ai .text-content { background-color: #d1e7dd; }
+
+    .typing-indicator {
+      display: inline-block;
+      background-color: #e9ecef;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #6c757d;
+    }
+
+    .dot {
+      display: inline-block;
+      font-weight: bold;
+      animation: blink 1.5s infinite;
+    }
+
+    .dot:nth-child(2) { animation-delay: 0.3s; }
+    .dot:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0; }
+      40% { opacity: 1; }
+    }
+
+    .btn-send {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      font-size: 24px;
+      transition: color 0.3s ease;
+      transform: rotate(45deg);
+    }
+    .btn-send:hover {
+      color: #ffcc00;
+    }
+
+    .btn-send:focus {
+      outline: none;
+    }
+
+    #chat-box::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #chat-box::-webkit-scrollbar-thumb {
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 3px;
+    }
+
+    @media (max-width: 768px) {
+      .form-container {
+        padding: 1.2rem;
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+      }
+
+      .btn-save {
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
+      }
+
+      .publish-switch {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .switch-label {
+        min-width: auto;
+      }
+    }
+
+    footer {
+      background-color: #0a0a0a;
+      padding: 1.5rem 0;
+      margin-top: 2.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    footer p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c2d2d;">
+    <div class="container">
+      <label class="navbar-brand nastaliq-brand">هنرکده فارسی</label>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a href="javascript:history.back()" class="btn-back">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+    </div>
+  </nav>
+
+  <section class="container my-5">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="main-card">
+          <div class="card-header">
+            <h2 class="card-title">ویرایشگر محتوا</h2>
+            <p class="card-subtitle">خلق محتوای اصیل فارسی</p>
+          </div>
+
+          <div class="form-container">
+            <form method="POST" action="/" id="humanForm">
+              <div class="mb-4">
+                <label class="form-label">
+                  <i class="bi bi-type"></i>
+                  عنوان محتوا
+                </label>
+                <input type="text" class="form-control" name="title" placeholder="عنوان محتوا را وارد کنید" required>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">
+                  <i class="bi bi-text-paragraph"></i>
+                  متن محتوا
+                </label>
+                <textarea class="form-control" name="content" placeholder="متن زیبا و ادبی خود را اینجا بنویسید..." required></textarea>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">
+                  <i class="bi bi-grid"></i>
+                  دسته‌بندی
+                </label>
+                <select class="form-select" name="category" required>
+                  <option value="" disabled selected style="color : black">انتخاب کنید</option>
+                  <option value="poems" style="color : black">شعر</option>
+                  <option value="stories" style="color : black">داستان کوتاه</option>
+                  <option value="literature" style="color : black">متن ادبی</option>
+                </select>
+              </div>
+
+              <div class="advanced-section">
+                <a class="advanced-toggle" id="humanAdvancedToggle">
+                  <i class="bi bi-gear"></i>
+                  تنظیمات پیشرفته
+                  <i class="bi bi-chevron-down ms-1" id="humanAdvancedIcon"></i>
+                </a>
+
+                <div class="advanced-content" id="humanAdvancedContent" style="display: none;">
+                  <div class="publish-switch">
+                    <span class="switch-label">وضعیت انتشار:</span>
+                    <div class="d-flex align-items-center gap-3">
+                      <label class="status-switch">
+                        <input type="checkbox" id="publishStatusCheckbox" checked>
+                        <span class="status-slider">
+                          <i class="bi bi-lock status-icon lock-icon"></i>
+                          <i class="bi bi-globe status-icon globe-icon"></i>
+                        </span>
+                      </label>
+                      <input type="hidden" name="publish_status" id="publishStatusHidden" value="public">
+                      <div id="statusBadge" class="status-badge status-public">
+                        <i class="bi bi-globe"></i> عمومی
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">
+                      <i class="bi bi-tags"></i>
+                      برچسب‌ها
+                    </label>
+                    <input type="text" class="form-control" id="tagInput" placeholder="تگ اضافه کنید و Enter بزنید...">
+                    <div class="tags-container" id="tagsContainer">
+                    </div>
+                    <input type="hidden" name="tags" id="tagsInput">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">
+                      <i class="bi bi-bar-chart"></i>
+                      سطح خوانایی
+                    </label>
+                    <select class="form-select" name="readability">
+                      <option value="easy" selected style="color : black">آسان (عمومی)</option>
+                      <option value="medium" style="color : black">متوسط (ادبی)</option>
+                      <option value="hard" style="color : black">پیشرفته (تخصصی)</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">
+                      <i class="bi bi-calendar"></i>
+                      تاریخ انتشار
+                    </label>
+                    <input type="date" class="form-control" name="publish_date">
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-save">
+                <i class="bi bi-save"></i>
+                ذخیره و انتشار محتوا
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card shadow-lg rounded-4 p-4" style="background: #555555;">
+          <h2 class="mb-4 text-center fw-bold" style="color: #ffcc00;"> چت با AI</h2>
+
+          <div id="chat-box" class="border rounded-3 p-3 mb-3" style="height: 418px;  background: #d3d2d0; ">
+          </div>
+
+          <form id="chat-form" class="d-flex gap-2">
+            <button class="btn-send" type="submit">
+              <i class="bi bi-send"></i>
+            </button>
+            <input type="text" id="user-input" class="form-control rounded-pill px-3 py-2 shadow-sm" placeholder="پیام خود را وارد کنید..." required>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-dark text-white py-3 text-center">
+    <p>© 2025 هنرکده فارسی | تمام حقوق محفوظ است</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const humanAdvancedToggle = document.getElementById('humanAdvancedToggle');
+    const humanAdvancedContent = document.getElementById('humanAdvancedContent');
+    const humanAdvancedIcon = document.getElementById('humanAdvancedIcon');
+
+    if (humanAdvancedToggle) {
+      humanAdvancedToggle.addEventListener('click', function() {
+        if (humanAdvancedContent.style.display === 'none' || humanAdvancedContent.style.display === '') {
+          humanAdvancedContent.style.display = 'block';
+          humanAdvancedIcon.classList.remove('bi-chevron-down');
+          humanAdvancedIcon.classList.add('bi-chevron-up');
+        } else {
+          humanAdvancedContent.style.display = 'none';
+          humanAdvancedIcon.classList.remove('bi-chevron-up');
+          humanAdvancedIcon.classList.add('bi-chevron-down');
+        }
+      });
+    }
+
+    const publishCheckbox = document.getElementById('publishStatusCheckbox');
+    const publishHidden = document.getElementById('publishStatusHidden');
+    const statusBadge = document.getElementById('statusBadge');
+
+    function initPublishSwitch() {
+      if (publishCheckbox && publishHidden && statusBadge) {
+        if (publishCheckbox.checked) {
+          publishHidden.value = 'public';
+          statusBadge.className = 'status-badge status-public';
+          statusBadge.innerHTML = '<i class="bi bi-globe"></i> عمومی';
+        } else {
+          publishHidden.value = 'private';
+          statusBadge.className = 'status-badge status-private';
+          statusBadge.innerHTML = '<i class="bi bi-lock"></i> خصوصی';
+        }
+      }
+    }
+
+    if (publishCheckbox) {
+      publishCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+          publishHidden.value = 'public';
+          statusBadge.className = 'status-badge status-public';
+          statusBadge.innerHTML = '<i class="bi bi-globe"></i> عمومی';
+        } else {
+          publishHidden.value = 'private';
+          statusBadge.className = 'status-badge status-private';
+          statusBadge.innerHTML = '<i class="bi bi-lock"></i> خصوصی';
+        }
+      });
+    }
+
+    const tagInput = document.getElementById('tagInput');
+    const tagsContainer = document.getElementById('tagsContainer');
+    const tagsInput = document.getElementById('tagsInput');
+    let tags = [];
+
+    const commonTags = ['عشق', 'طبیعت', 'فلسفه', 'اجتماعی', 'تاریخی', 'معاصر', 'کلاسیک', 'ادبیات', 'شعر', 'داستان'];
+
+    function showSuggestedTags() {
+      if (tagsContainer && commonTags) {
+        tagsContainer.innerHTML = '';
+        commonTags.forEach(tag => {
+          const tagElement = document.createElement('div');
+          tagElement.className = 'tag';
+          tagElement.textContent = tag;
+          tagElement.onclick = function() {
+            if (!tags.includes(tag) && tags.length < 5) {
+              tags.push(tag);
+              updateTagsDisplay();
+            }
+          };
+          tagsContainer.appendChild(tagElement);
+        });
+      }
+    }
+
+    function updateTagsDisplay() {
+      if (!tagsContainer || !tagsInput) return;
+
+      tagsContainer.innerHTML = '';
+
+      tags.forEach((tag, index) => {
+        const tagElement = document.createElement('div');
+        tagElement.className = 'tag active';
+        tagElement.innerHTML = `
+          ${tag}
+          <i class="bi bi-x" onclick="removeTag(${index})"></i>
+        `;
+        tagsContainer.appendChild(tagElement);
+      });
+
+      commonTags.forEach(tag => {
+        if (!tags.includes(tag)) {
+          const tagElement = document.createElement('div');
+          tagElement.className = 'tag';
+          tagElement.textContent = tag;
+          tagElement.onclick = function() {
+            if (!tags.includes(tag) && tags.length < 5) {
+              tags.push(tag);
+              updateTagsDisplay();
+            }
+          };
+          tagsContainer.appendChild(tagElement);
+        }
+      });
+
+      tagsInput.value = tags.join(',');
+    }
+
+    window.removeTag = function(index) {
+      tags.splice(index, 1);
+      updateTagsDisplay();
+    };
+
+    if (tagInput) {
+      tagInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const tagText = this.value.trim();
+
+          if (tagText && !tags.includes(tagText) && tags.length < 5) {
+            tags.push(tagText);
+            updateTagsDisplay();
+            this.value = '';
+          }
+        }
+      });
+    }
+
+    const chatBox = document.getElementById('chat-box');
+    const chatForm = document.getElementById('chat-form');
+    const userInput = document.getElementById('user-input');
+
+    function addMessage(sender, text, isHtml = false) {
+      const div = document.createElement('div');
+      div.classList.add('message', sender);
+      const content = document.createElement('span');
+      content.classList.add('text-content');
+      if (isHtml) {
+        content.innerHTML = text;
+      } else {
+        content.textContent = text;
+      }
+      div.appendChild(content);
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return content;
+    }
+
+    chatForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      addMessage('user', message);
+      userInput.value = '';
+      userInput.disabled = true;
+
+      const typingContent = addMessage('ai', 'در حال نوشتن');
+
+      let dots = 0;
+      const interval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        typingContent.textContent = "در حال نوشتن" + ".".repeat(dots);
+      }, 500);
+
+      try {
+        const response = await fetch('/generate_simple', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: message })
+        });
+        const data = await response.json();
+
+        clearInterval(interval);
+        typingContent.parentElement.remove();
+        addMessage('ai', data.response);
+
+      } catch (err) {
+        clearInterval(interval);
+        typingContent.parentElement.remove();
+        addMessage('ai', 'خطا در دریافت پاسخ از AI.');
+        console.error(err);
+      } finally {
+        userInput.disabled = false;
+        userInput.focus();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initPublishSwitch();
+      showSuggestedTags();
+
+      const today = new Date().toISOString().split('T')[0];
+      const publishDateInput = document.querySelector('input[name="publish_date"]');
+      if (publishDateInput) {
+        publishDateInput.value = today;
+        publishDateInput.min = today;
+      }
+
+      const humanCard = document.querySelector('.main-card');
+      if (humanCard) {
+        humanCard.style.opacity = '0';
+        humanCard.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          humanCard.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          humanCard.style.opacity = '1';
+          humanCard.style.transform = 'translateY(0)';
+        }, 100);
+      }
+
+      addMessage('ai', 'سلام! من دستیار هوشمند هنرکده فارسی هستم. چطور می‌توانم به شما کمک کنم؟');
+    });
+  </script>
+</body>
+</html>

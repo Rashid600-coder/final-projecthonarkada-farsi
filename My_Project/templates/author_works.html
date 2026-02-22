@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>آثار {{ author.first_name }} {{ author.last_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/author_works.css') }}">
+</head>
+<body>
+  <div class="container">
+      <a href="javascript:history.back()" class="btn-back">
+        <i class="bi bi-arrow-right-circle"></i>
+      </a>
+
+      <div class="author-header">
+        {% if author.image %}
+        <img src="{{ url_for('static', filename='profile_pics/' + author.image) }}"
+             class="author-avatar"
+             alt="{{ author.first_name }} {{ author.last_name }}">
+        {% else %}
+        <div class="author-avatar d-flex align-items-center justify-content-center"
+             style="background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%); font-size: 3.5rem; color: #999;">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        {% endif %}
+
+        <div class="author-info">
+          <h1>{{ author.first_name }} {{ author.last_name }}</h1>
+          <span class="artworks-count">{{ artworks|length }} اثر</span>
+
+          {% if author.bio %}
+          <p class="mt-3" style="color: #666; line-height: 1.8;">{{ author.bio }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if artworks %}
+      <div class="filter-section">
+        <h4 class="filter-title">
+          <i class="bi bi-funnel"></i>
+          فیلتر بر اساس نوع اثر
+          <span class="filter-count" id="filter-count">{{ artworks|length }}</span>
+        </h4>
+
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all" onclick="filterArtworks('all')">
+            <i class="bi bi-collection"></i>
+            همه آثار
+            <span class="badge">{{ artworks|length }}</span>
+          </button>
+
+          {% set categories = [] %}
+          {% for artwork in artworks %}
+            {% if artwork.category and artwork.category not in categories %}
+              {% set _ = categories.append(artwork.category) %}
+            {% endif %}
+          {% endfor %}
+
+          {% for category in categories %}
+            {% set count = artworks|selectattr('category', 'equalto', category)|list|length %}
+            <button class="filter-btn" data-filter="{{ category }}" onclick="filterArtworks('{{ category }}')">
+              <i class="bi bi-tag"></i>
+              {{ category }}
+              <span class="badge">{{ count }}</span>
+            </button>
+          {% endfor %}
+
+          {% set public_count = artworks|selectattr('status', 'equalto', 'public')|list|length %}
+          <button class="filter-btn" data-filter="public" onclick="filterArtworks('public')">
+            <i class="bi bi-eye"></i>
+            آثار عمومی
+            <span class="badge">{{ public_count }}</span>
+          </button>
+
+          {% set private_count = artworks|selectattr('status', 'equalto', 'private')|list|length %}
+          <button class="filter-btn" data-filter="private" onclick="filterArtworks('private')">
+            <i class="bi bi-lock"></i>
+            آثار خصوصی
+            <span class="badge">{{ private_count }}</span>
+          </button>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if artworks %}
+      <div class="artworks-list" id="artworks-list">
+        {% for artwork in artworks %}
+        <div class="artwork-card"
+             data-category="{{ artwork.category or 'بدون دسته‌بندی' }}"
+             data-status="{{ artwork.status }}"
+             style="animation-delay: {{ loop.index * 0.1 }}s;">
+
+          {% if artwork.category %}
+          <div class="artwork-category">{{ artwork.category }}</div>
+          {% endif %}
+
+          <h3 class="artwork-title">
+            <i class="bi bi-bookmark-star"></i>
+            {{ artwork.title }}
+            {% if artwork.status == "private" %}
+              <i class="bi bi-lock-fill" title="محتوای خصوصی" style="color: #ff6b6b; margin-right: 5px;"></i>
+            {% endif %}
+          </h3>
+
+          {% if artwork.status == "public" %}
+          <div class="artwork-content collapsed"
+               id="content-{{ loop.index }}"
+               data-full-content="{{ artwork.content|e }}">
+            {% if artwork.content|length > 300 %}
+              {{ artwork.content[:300] }}...
+            {% else %}
+              {{ artwork.content }}
+            {% endif %}
+          </div>
+
+          {% if artwork.content|length > 300 %}
+          <button class="toggle-content-btn"
+                  data-target="content-{{ loop.index }}"
+                  data-full-content="{{ artwork.content|e }}"
+                  onclick="toggleContent(this)">
+            <span class="btn-text">مشاهده بیشتر</span>
+            <i class="bi bi-chevron-down"></i>
+          </button>
+          {% endif %}
+
+          <div class="artwork-meta">
+            {% if artwork.date %}
+            <div class="meta-item">
+              <i class="bi bi-calendar3" style="color: #ff6b6b;"></i>
+              <span>{{ artwork.date }}</span>
+            </div>
+            {% endif %}
+
+            {% if artwork.category %}
+            <div class="meta-item">
+              <i class="bi bi-tag" style="color: #4ecdc4;"></i>
+              <span>{{ artwork.category }}</span>
+            </div>
+            {% endif %}
+
+            {% if artwork.read_time %}
+            <div class="meta-item">
+              <i class="bi bi-clock" style="color: #ffa502;"></i>
+              <span>{{ artwork.read_time }} دقیقه مطالعه</span>
+            </div>
+            {% endif %}
+          </div>
+
+          {% else %}
+          <div class="artwork-content private-content" style="color: #999; font-style: italic; margin-top: 8px;">
+            <i class="bi bi-lock-fill"></i> این محتوا خصوصی است و فقط برای کاربران خاص قابل مشاهده می‌باشد.
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="no-artworks">
+        <i class="bi bi-book"></i>
+        <h3 class="mt-3">هنوز اثری از این نویسنده ثبت نشده است</h3>
+        <p class="text-muted">این نویسنده تاکنون اثری منتشر نکرده است.</p>
+      </div>
+      {% endif %}
+  </div>
+
+  <div class="content-overlay" id="content-overlay" onclick="closeAllExpandedContents()"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let expandedContents = new Set();
+    let currentFilter = 'all';
+    const originalContents = {};
+
+    function toggleContent(button) {
+      const targetId = button.getAttribute('data-target');
+      const content = document.getElementById(targetId);
+      const fullContent = button.getAttribute('data-full-content');
+      const btnText = button.querySelector('.btn-text');
+
+      if (content.classList.contains('collapsed')) {
+        if (!originalContents[targetId]) {
+          originalContents[targetId] = content.innerHTML;
+        }
+
+        content.innerHTML = fullContent;
+        content.classList.remove('collapsed');
+        content.classList.add('expanded');
+        btnText.textContent = 'مشاهده کمتر';
+        button.classList.add('expanded');
+        expandedContents.add(targetId);
+
+        document.getElementById('content-overlay').style.display = 'block';
+
+        setTimeout(() => {
+          content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      } else {
+        closeContent(content, button, btnText, targetId);
+      }
+    }
+
+    function closeContent(content, button, btnText, targetId) {
+      if (originalContents[targetId]) {
+        content.innerHTML = originalContents[targetId];
+      } else {
+        const fullContent = button.getAttribute('data-full-content');
+        const shortContent = fullContent.length > 300 ?
+                          fullContent.substring(0, 300) + '...' :
+                          fullContent;
+        content.innerHTML = shortContent;
+      }
+
+      content.classList.remove('expanded');
+      content.classList.add('collapsed');
+      btnText.textContent = 'مشاهده بیشتر';
+      button.classList.remove('expanded');
+      expandedContents.delete(targetId);
+
+      if (expandedContents.size === 0) {
+        document.getElementById('content-overlay').style.display = 'none';
+      }
+    }
+
+    function closeAllExpandedContents() {
+      const buttons = document.querySelectorAll('.toggle-content-btn.expanded');
+
+      buttons.forEach(button => {
+        const targetId = button.getAttribute('data-target');
+        const content = document.getElementById(targetId);
+        const btnText = button.querySelector('.btn-text');
+
+        if (content && content.classList.contains('expanded')) {
+          closeContent(content, button, btnText, targetId);
+        }
+      });
+
+      document.getElementById('content-overlay').style.display = 'none';
+    }
+
+    document.getElementById('content-overlay').addEventListener('click', closeAllExpandedContents);
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeAllExpandedContents();
+      }
+    });
+
+    function filterArtworks(filter) {
+      const artworks = document.querySelectorAll('.artwork-card');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      let visibleCount = 0;
+
+      filterButtons.forEach(btn => {
+        if (btn.getAttribute('data-filter') === filter) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      currentFilter = filter;
+
+      artworks.forEach(artwork => {
+        const category = artwork.getAttribute('data-category');
+        const status = artwork.getAttribute('data-status');
+        let shouldShow = false;
+
+        if (filter === 'all') {
+          shouldShow = true;
+        } else if (filter === 'public') {
+          shouldShow = status === 'public';
+        } else if (filter === 'private') {
+          shouldShow = status === 'private';
+        } else {
+          shouldShow = category === filter;
+        }
+
+        if (shouldShow) {
+          artwork.classList.remove('hidden');
+          artwork.classList.add('visible');
+          visibleCount++;
+
+          artwork.style.animation = 'fadeInUp 0.6s ease-out forwards';
+        } else {
+          artwork.classList.add('hidden');
+          artwork.classList.remove('visible');
+          artwork.style.animation = 'none';
+        }
+      });
+
+      document.getElementById('filter-count').textContent = visibleCount;
+      closeAllExpandedContents();
+    }
+
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.classList.contains('visible')) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.artwork-card').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(card);
+    });
+
+    document.querySelectorAll('.artwork-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        const icon = this.querySelector('.artwork-title i');
+        if (icon) {
+          icon.style.transform = 'rotate(15deg) scale(1.2)';
+        }
+      });
+
+      card.addEventListener('mouseleave', function() {
+        const icon = this.querySelector('.artwork-title i');
+        if (icon) {
+          icon.style.transform = 'rotate(0) scale(1)';
+        }
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        document.querySelector('.btn-back').style.transform = 'translateX(0)';
+      }, 300);
+
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      filterButtons.forEach((btn, index) => {
+        btn.style.opacity = '0';
+        btn.style.transform = 'translateY(10px)';
+        btn.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+
+        setTimeout(() => {
+          btn.style.opacity = '1';
+          btn.style.transform = 'translateY(0)';
+        }, 400 + (index * 50));
+      });
+
+      document.querySelectorAll('.artwork-content.collapsed').forEach(content => {
+        const targetId = content.id;
+        originalContents[targetId] = content.innerHTML;
+      });
+    });
+
+    function simpleToggleContent(button) {
+        const targetId = button.getAttribute('data-target');
+        const content = document.getElementById(targetId);
+        const btnText = button.querySelector('.btn-text');
+        const fullContent = button.getAttribute('data-full-content');
+
+        if (content.classList.contains('collapsed')) {
+            content.innerHTML = fullContent;
+            content.classList.remove('collapsed');
+            content.classList.add('expanded');
+            btnText.textContent = 'مشاهده کمتر';
+            button.classList.add('expanded');
+
+            document.getElementById('content-overlay').style.display = 'block';
+
+            setTimeout(() => {
+                content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        } else {
+            const shortContent = fullContent.length > 300 ?
+                fullContent.substring(0, 300) + '...' :
+                fullContent;
+
+            content.innerHTML = shortContent;
+            content.classList.remove('expanded');
+            content.classList.add('collapsed');
+            btnText.textContent = 'مشاهده بیشتر';
+            button.classList.remove('expanded');
+
+            const expandedContents = document.querySelectorAll('.artwork-content.expanded');
+            if (expandedContents.length === 0) {
+                document.getElementById('content-overlay').style.display = 'none';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.toggle-content-btn').forEach(button => {
+        button.onclick = function() {
+          simpleToggleContent(this);
+        };
+      });
+    });
+  </script>
+</body>
+</html>

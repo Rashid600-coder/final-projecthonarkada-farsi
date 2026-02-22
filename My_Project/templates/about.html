@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>درباره ما - هنرکده فارسی</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+</head>
+
+<body>
+  <div class="floating-words">
+    <div class="floating-word" style="top:10%; right:5%; animation-delay: 0s;">هنر</div>
+    <div class="floating-word" style="top:20%; right:25%; animation-delay: 5s;">ادبیات</div>
+    <div class="floating-word" style="top:40%; right:60%; animation-delay: 10s;">فارسی</div>
+    <div class="floating-word" style="top:60%; right:80%; animation-delay: 15s;">فرهنگ</div>
+    <div class="floating-word" style="top:80%; right:40%; animation-delay: 20s;">خلاقیت</div>
+  </div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2c2d2d;">
+    <div class="container">
+      <a class="navbar-brand nastaliq-brand" href="{{ url_for('index') }}">هنرکده فارسی</a>
+
+      <a href="{{url_for('index')}}" class="btn-back">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarNav">
+        <ul class="navbar-nav custom-nav-graphic" style="display:inline-flex; transform: translateX(50px);">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">خانه</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('Authors') }}">نویسندگان و شاعران</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin') }}">نگارش محتوا</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('categories') }}">آرشیو</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('my_artworks') }}">آثار من</a></li>
+          <li class="nav-item"><a class="nav-link active" href="{{ url_for('about') }}">درباره ما</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="about-container animate__animated animate__fadeIn">
+      <h1 class="about-title">درباره هنرکده فارسی</h1>
+
+      <div class="about-text fade-in-up" style="animation-delay: 0.2s;">
+        هنرکده فارسی یک پلتفرم پیشرفته برای انتشار و اشتراک‌گذاری محتوای ادبی و هنری به زبان فارسی است.
+        هدف ما ایجاد بستری پویا و الهام‌بخش برای هنرمندان، نویسندگان، شاعران و تمام علاقه‌مندان به فرهنگ و ادبیات فارسی است.
+        در این فضای مجازی، کلمات به رقص درمی‌آیند و معنا جان می‌گیرد.
+      </div>
+
+      <div class="about-text fade-in-up" style="animation-delay: 0.4s;">
+        ما باور داریم که هنر و ادبیات فارسی میراثی ارزشمند است که باید حفظ شود و به نسل‌های آینده منتقل گردد.
+        در هنرکده فارسی، تلاش می‌کنیم تا با ارائه ابزارهای مدرن و محیطی کاربرپسند، تجربه‌ای منحصر به فرد از مطالعه،
+        نگارش و اشتراک‌گذاری آثار ادبی را برای شما فراهم کنیم.
+      </div>
+
+      <div class="features-grid fade-in-up" style="animation-delay: 0.6s;">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-pencil-square"></i>
+          </div>
+          <h3 class="feature-title">نگارش پیشرفته</h3>
+          <p class="feature-description">ابزارهای مدرن برای نوشتن و ویرایش متون ادبی با محیط کاربری روان و کارآمد</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-journal-text"></i>
+          </div>
+          <h3 class="feature-title">آرشیو غنی</h3>
+          <p class="feature-description">مجموعه‌ای ارزشمند از آثار ادبی فارسی در دسته‌بندی‌های مختلف</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-people"></i>
+          </div>
+          <h3 class="feature-title">جامعه ادبی</h3>
+          <p class="feature-description">فضایی برای تعامل، نقد و تبادل نظر میان هنرمندان و علاقه‌مندان</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="bi bi-lightning-charge"></i>
+          </div>
+          <h3 class="feature-title">خلاقیت و نوآوری</h3>
+          <p class="feature-description">ترکیب سنت و تکنولوژی برای خلق آثار جدید و الهام‌بخش</p>
+        </div>
+      </div>
+      <a href="mailto:info@honarkadeh-farsi.ir" class="contact-button fade-in-up" style="animation-delay: 1.2s;">
+        <i class="bi bi-envelope me-2"></i>ارتباط با ما
+      </a>
+    </div>
+  </div>
+
+  <footer class="py-4 text-center">
+    <p>© 2025 هنرکده فارسی | تمام حقوق محفوظ است</p>
+    <p class="mt-2 text-light opacity-75">
+      <small>حافظ فرهنگ و ادب فارسی</small>
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in-up').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      observer.observe(el);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.feature-card, .team-member');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = this.classList.contains('feature-card')
+            ? 'translateY(-15px) scale(1.03)'
+            : 'translateY(-15px)';
+        });
+
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0) scale(1)';
+        });
+      });
+
+      window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const aboutContainer = document.querySelector('.about-container');
+        if (aboutContainer) {
+          aboutContainer.style.transform = `translateY(${scrolled * 0.05}px)`;
+        }
+      });
+
+      const floatingWords = document.querySelectorAll('.floating-word');
+      floatingWords.forEach((word, index) => {
+        word.style.animationDelay = `${index * 5}s`;
+      });
+    });
+
+    const backToTopBtn = document.createElement('button');
+    backToTopBtn.innerHTML = '<i class="bi bi-arrow-up"></i>';
+    backToTopBtn.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--gradient-gold);
+      color: #000;
+      border: none;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(255, 204, 0, 0.3);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(20px);
+    `;
+
+    document.body.appendChild(backToTopBtn);
+
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 300) {
+        backToTopBtn.style.opacity = '1';
+        backToTopBtn.style.transform = 'translateY(0)';
+      } else {
+        backToTopBtn.style.opacity = '0';
+        backToTopBtn.style.transform = 'translateY(20px)';
+      }
+    });
+
+    backToTopBtn.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    const aboutTitle = document.querySelector('.about-title');
+    const originalText = aboutTitle.textContent;
+    aboutTitle.textContent = '';
+
+    let charIndex = 0;
+    function typeWriter() {
+      if (charIndex < originalText.length) {
+        aboutTitle.textContent += originalText.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeWriter, 50);
+      }
+    }
+
+    setTimeout(typeWriter, 500);
+  </script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل مدیریت - هنرکده فارسی</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+  <div class="particles-container" id="particles"></div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgba(44, 45, 45, 0.95); backdrop-filter: blur(10px);">
+    <div class="container">
+      <leble class="navbar-brand nastaliq-brand">هنرکده فارسی</leble>
+      <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarNav">
+          <ul class="navbar-nav custom-nav-graphic" style="display:inline-flex; transform: translateX(50px);">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">خانه</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('Authors') }}">نویسندگان و شاعران</a></li>
+            <li class="nav-item"><a class="nav-link active" href="{{ url_for('admin') }}">نگارش محتوا</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('categories') }}">آرشیو</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('my_artworks') }}">آثار من</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">درباره ما</a></li>
+          </ul>
+      </div>
+      <a href="{{url_for('index')}}" class="btn-back floating">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+
+  <section class="main-section">
+    <div class="container">
+      <div class="page-title">
+        <h1 class="pulse">انتخاب روش تولید محتوا</h1>
+        <p>روشی که دوست دارید را برای ایجاد محتوای هنری انتخاب کنید</p>
+        <div class="light-effect" style="top: -100px; right: -50px;"></div>
+      </div>
+
+      <div class="row animate-cards">
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="content-card">
+            <a href="{{ url_for('human_admin') }}" class="btn-custom">
+              <i class="bi bi-person-fill"></i>
+              <span>تولید محتوا توسط انسان</span>
+            </a>
+            <div class="card-image-container">
+              <img src="{{ url_for('static', filename='heuman.jpg') }}" alt="انسان" class="card-image">
+              <div class="light-effect" style="top: 20px; right: 20px; width: 100px; height: 100px;"></div>
+            </div>
+            <div class="mt-3">
+              <h4 class="mb-2" style="color: #ffcc00;">خلاقیت انسانی</h4>
+              <p style="color: #aaa; font-size: 0.95rem;">استفاده از ذهن خلاق و احساسات عمیق انسانی برای خلق آثار هنری بی‌نظیر</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="content-card">
+            <a href="{{url_for('AI_admin')}}" class="btn-custom">
+              <i class="bi bi-cpu-fill"></i>
+              <span>تولید محتوا توسط AI</span>
+            </a>
+            <div class="card-image-container">
+              <img src="{{ url_for('static', filename='AI.jpg') }}" alt="هوش مصنوعی" class="card-image">
+              <div class="light-effect" style="top: 20px; left: 20px; width: 100px; height: 100px;"></div>
+            </div>
+            <div class="mt-3">
+              <h4 class="mb-2" style="color: #ffcc00;">هوش مصنوعی پیشرفته</h4>
+              <p style="color: #aaa; font-size: 0.95rem;">بهره‌گیری از آخرین فناوری‌های هوش مصنوعی برای تولید محتوای خلاقانه</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="content-card">
+            <a href="Human_AI_admin" class="btn-custom">
+              <i class="bi bi-people-fill"></i>
+              <span>تعامل زنده با AI</span>
+            </a>
+            <div class="card-image-container">
+              <img src="{{ url_for('static', filename='heuman&AI.jpg') }}" alt="انسان و AI با هم" class="card-image">
+              <div class="light-effect" style="bottom: 20px; left: 50%; transform: translateX(-50%); width: 120px; height: 120px;"></div>
+            </div>
+            <div class="mt-3">
+              <h4 class="mb-2" style="color: #ffcc00;">همکاری انسان و ماشین</h4>
+              <p style="color: #aaa; font-size: 0.95rem;">ترکیب خلاقیت انسانی با توانایی‌های هوش مصنوعی برای خلق آثار منحصربه‌فرد</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </section>
+
+  <footer class="py-4 text-center">
+    <p>© 2025 هنرکده فارسی | تمام حقوق محفوظ است</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const particleCount = 30;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+
+        const size = Math.random() * 100 + 20;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+
+        particle.style.animationDelay = `${Math.random() * 20}s`;
+
+        particle.style.opacity = Math.random() * 0.1 + 0.05;
+
+        container.appendChild(particle);
+      }
+    }
+
+    function animateCards() {
+      const cards = document.querySelectorAll('.content-card');
+      cards.forEach(card => {
+        card.style.animation = 'cardEntrance 0.8s forwards';
+      });
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      const light = document.querySelector('.light-effect');
+      if (light) {
+        light.style.left = `${e.clientX}px`;
+        light.style.top = `${e.clientY}px`;
+      }
+    });
+
+    function typeWriterEffect() {
+      const title = document.querySelector('.page-title h1');
+      const text = title.textContent;
+      title.textContent = '';
+
+      let i = 0;
+      const typing = setInterval(() => {
+        if (i < text.length) {
+          title.textContent += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(typing);
+        }
+      }, 100);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      animateCards();
+
+      setTimeout(() => {
+        document.querySelector('.animate-cards').classList.add('animate-cards');
+      }, 500);
+
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+
+      const contentCards = document.querySelectorAll('.content-card');
+      contentCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        });
+      });
+    });
+    const themeToggle = document.createElement('button');
+    themeToggle.innerHTML = '<i class="bi bi-moon-stars"></i>';
+    themeToggle.style.position = 'fixed';
+    themeToggle.style.bottom = '20px';
+    themeToggle.style.left = '20px';
+    themeToggle.style.zIndex = '1000';
+    themeToggle.style.background = 'rgba(255, 204, 0, 0.2)';
+    themeToggle.style.border = 'none';
+    themeToggle.style.borderRadius = '50%';
+    themeToggle.style.width = '50px';
+    themeToggle.style.height = '50px';
+    themeToggle.style.color = '#ffcc00';
+    themeToggle.style.cursor = 'pointer';
+    themeToggle.style.transition = 'all 0.3s ease';
+    themeToggle.title = 'تغییر تم';
+
+    themeToggle.addEventListener('mouseenter', () => {
+      themeToggle.style.transform = 'scale(1.1)';
+      themeToggle.style.background = 'rgba(255, 204, 0, 0.3)';
+    });
+
+    themeToggle.addEventListener('mouseleave', () => {
+      themeToggle.style.transform = 'scale(1)';
+      themeToggle.style.background = 'rgba(255, 204, 0, 0.2)';
+    });
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      if (document.body.classList.contains('light-theme')) {
+        themeToggle.innerHTML = '<i class="bi bi-sun"></i>';
+        document.body.style.background = '#f5f5f5';
+        document.body.style.color = '#333';
+
+        const pageTitle = document.querySelector('.page-title h1.pulse');
+        if (pageTitle) {
+          pageTitle.style.setProperty('color', '#000', 'important');
+          pageTitle.style.setProperty('text-shadow', 'none', 'important');
+        }
+
+        const pageSubtitle = document.querySelector('.page-title p');
+        if (pageSubtitle) {
+          pageSubtitle.style.color = '#666';
+        }
+
+      } else {
+        themeToggle.innerHTML = '<i class="bi bi-moon-stars"></i>';
+        document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)';
+        document.body.style.color = '#f0f0f0';
+
+        const pageTitle = document.querySelector('.page-title h1.pulse');
+        if (pageTitle) {
+          pageTitle.style.setProperty('color', '#ffcc00', 'important');
+          pageTitle.style.setProperty('text-shadow', '0 0 10px rgba(255, 204, 0, 0.5)', 'important');
+        }
+
+        const pageSubtitle = document.querySelector('.page-title p');
+        if (pageSubtitle) {
+          pageSubtitle.style.color = 'rgba(255, 255, 255, 0.8)';
+        }
+      }
+    });
+
+    document.body.appendChild(themeToggle);
+  </script>
+</body>
+</html>
