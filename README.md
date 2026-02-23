@@ -16,6 +16,8 @@ Insert your API key on line 706.
 Insert the API base URL (the website from which you obtained the API key) on line 707.
 If you do not have an API key, you can obtain a limited free key for testing purposes from the following website:
 https://gapgpt.app/ai-api
+Note: Due to internet filtering conditions, some APIs may not function correctly.
+Please pay attention to the debug output in the CMD/terminal window for troubleshooting.
 
 5. Run the Project
 After configuring the API key:
